@@ -61,6 +61,10 @@ class CONTENT_EXPORT SSLPolicy {
                                                    int cert_id,
                                                    net::CertStatus cert_status);
 
+  void OnAllowCertificate(WebContents* webContents, bool allow);
+
+  void OnCertificateError(std::unique_ptr<SSLErrorHandler> handler);
+
  private:
   enum OnCertErrorInternalOptionsMask {
     OVERRIDABLE = 1 << 0,
