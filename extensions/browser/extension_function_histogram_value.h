@@ -1211,6 +1211,8 @@ enum HistogramValue {
   WEBVIEWINTERNAL_COOKIESGETALL,
   WEBVIEWINTERNAL_COOKIESSET,
   WEBVIEWINTERNAL_COOKIESREMOVE,
+  WEBVIEWINTERNAL_ALLOWCERTIFICATE,
+  WEB_VIEW_INTERNAL_ON_SUBFRAME_CERTIFICATE_ERROR,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY

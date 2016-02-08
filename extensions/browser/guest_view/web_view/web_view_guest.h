@@ -257,6 +257,9 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
       const content::WebContents* web_contents) const final;
   void VisibleSSLStateChanged(const content::WebContents* source) final;
 
+  void OnCertificateError(base::ListValue* certificate) final;
+  void OnSubFrameCertificateError(base::ListValue* certificate) final;
+
   // WebContentsObserver implementation.
   void DidCommitProvisionalLoadForFrame(
       content::RenderFrameHost* render_frame_host,
