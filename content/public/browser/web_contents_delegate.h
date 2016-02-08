@@ -524,6 +524,9 @@ class CONTENT_EXPORT WebContentsDelegate {
   // compositor proto.  This is used in Blimp mode.
   virtual void ForwardCompositorProto(const std::vector<uint8_t>& proto) {}
 
+  // Called when CertificateError occurs
+  virtual void OnCertificateError(base::ListValue* certificate) {}
+
  protected:
   virtual ~WebContentsDelegate();
 

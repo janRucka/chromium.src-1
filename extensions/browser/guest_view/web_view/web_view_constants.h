@@ -16,6 +16,7 @@ extern const char kAttributeAllowTransparency[];
 extern const char kAttributeAllowScaling[];
 extern const char kAttributeName[];
 extern const char kAttributeSrc[];
+extern const char kAttributeUseAutomaticCertHandling[];
 extern const char kAttributeUseNewProcess[];
 
 // API namespace.
@@ -28,6 +29,7 @@ extern const char kAPILoadDataInvalidBaseURL[];
 extern const char kAPILoadDataInvalidVirtualURL[];
 
 // Events.
+extern const char kEventCertificateError[];
 extern const char kEventClose[];
 extern const char kEventConsoleMessage[];
 extern const char kEventContentLoad[];
@@ -67,6 +69,7 @@ extern const char kEventSendHeaders[];
 extern const char kWebViewEventPrefix[];
 
 // Parameters/properties on events.
+extern const char kCertificate[];
 extern const char kContextMenuItems[];
 extern const char kDefaultPromptText[];
 extern const char kFindSearchText[];

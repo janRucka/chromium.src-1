@@ -2,6 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include <mutex>
 #include "content/browser/ssl/ssl_cert_error_handler.h"
 
 #include "content/browser/ssl/ssl_manager.h"
@@ -10,6 +11,8 @@
 #include "net/cert/x509_certificate.h"
 
 namespace content {
+
+  std::set<SSLCertErrorHandler*> instances;
 
 SSLCertErrorHandler::SSLCertErrorHandler(
     const base::WeakPtr<Delegate>& delegate,
@@ -41,6 +44,20 @@ void SSLCertErrorHandler::OnDispatched() {
   manager_->policy()->OnCertError(this);
 }
 
-SSLCertErrorHandler::~SSLCertErrorHandler() {}
+void SSLCertErrorHandler::InsertInstance(SSLCertErrorHandler* instance) {
+  instances.insert(instance);
+}
+
+void SSLCertErrorHandler::EraseInstance(SSLCertErrorHandler* instance) {
+  instances.erase(instance);
+}
+
+std::set<SSLCertErrorHandler*> SSLCertErrorHandler::GetInstances() {
+  return instances;
+}
+
+SSLCertErrorHandler::~SSLCertErrorHandler() {
+  EraseInstance(this);
+}
 
 }  // namespace content
