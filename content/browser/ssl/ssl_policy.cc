@@ -2,6 +2,9 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+#include <set>
+#include <utility>
+
 #include "content/browser/ssl/ssl_policy.h"
 
 #include "base/base_switches.h"
@@ -25,6 +28,8 @@
 #include "content/public/common/url_constants.h"
 #include "net/ssl/ssl_info.h"
 #include "url/gurl.h"
+#include "content/nw/src/nw_content.h"
+#include "net/ssl/ssl_info.h"
 
 namespace content {
 
@@ -41,6 +46,58 @@ enum SSLGoodCertSeenEvent {
 SSLPolicy::SSLPolicy(SSLPolicyBackend* backend)
     : backend_(backend) {
   DCHECK(backend_);
+}
+
+static base::ListValue *ListValue_FromStringArray(const std::vector<std::string> &arr) {
+  base::ListValue *v = new base::ListValue();
+  for (std::vector<std::string>::const_iterator iter = arr.begin(); iter != arr.end(); ++iter) {
+    v->AppendString(*iter);
+  }
+  return v;
+}
+
+void SSLPolicy::OnCertificateError(SSLCertErrorHandler* handler)
+{
+  WebContents* webContents = handler->GetManager()->controller()->GetWebContents();
+
+  // remove potential pending instances
+  for (SSLCertErrorHandler* handler : SSLCertErrorHandler::GetInstances()) {
+    WebContents* tab = handler->GetManager()->controller()->GetWebContents();
+    if (tab == webContents) {
+      SSLCertErrorHandler::EraseInstance(handler);
+      break;
+    }
+  }
+
+  SSLCertErrorHandler::InsertInstance(handler);
+
+  base::DictionaryValue* dict = new base::DictionaryValue;
+  dict->SetString("url", handler->request_url().spec());
+  dict->SetInteger("status", handler->ssl_info().cert_status);
+  dict->SetString("issuer.common_name", handler->ssl_info().cert->issuer().common_name);
+  dict->SetString("issuer.country_name", handler->ssl_info().cert->issuer().country_name);
+  dict->SetString("issuer.locality_name", handler->ssl_info().cert->issuer().locality_name);
+  dict->Set("issuer.street_addresses", ListValue_FromStringArray(handler->ssl_info().cert->issuer().street_addresses));
+  dict->Set("issuer.domain_components", ListValue_FromStringArray(handler->ssl_info().cert->issuer().domain_components));
+  dict->Set("issuer.organization_names", ListValue_FromStringArray(handler->ssl_info().cert->issuer().organization_names));
+  dict->Set("issuer.organization_unit_names", ListValue_FromStringArray(handler->ssl_info().cert->issuer().organization_unit_names));
+  dict->SetString("subject.common_name", handler->ssl_info().cert->subject().common_name);
+  dict->SetString("subject.country_name", handler->ssl_info().cert->subject().country_name);
+  dict->SetString("subject.locality_name", handler->ssl_info().cert->subject().locality_name);
+  dict->Set("subject.street_addresses", ListValue_FromStringArray(handler->ssl_info().cert->subject().street_addresses));
+  dict->Set("subject.domain_components", ListValue_FromStringArray(handler->ssl_info().cert->subject().domain_components));
+  dict->Set("subject.organization_names", ListValue_FromStringArray(handler->ssl_info().cert->subject().organization_names));
+  dict->Set("subject.organization_unit_names", ListValue_FromStringArray(handler->ssl_info().cert->subject().organization_unit_names));
+  dict->SetString("fingerprint", base::HexEncode(handler->ssl_info().cert->fingerprint().data, sizeof(net::SHA1HashValue)));
+
+  scoped_ptr<base::ListValue> certificateInfo(new base::ListValue());
+  certificateInfo->Append(dict);
+
+  webContents->OnCertificateError(std::move(certificateInfo));
+
+  webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLPolicy::*)
+    (WebContents*, bool)>(&SSLPolicy::OnAllowCertificate),
+    base::Unretained(this)));
 }
 
 void SSLPolicy::OnCertError(SSLCertErrorHandler* handler) {
@@ -75,7 +132,12 @@ void SSLPolicy::OnCertError(SSLCertErrorHandler* handler) {
         options_mask |= STRICT_ENFORCEMENT;
       if (expired_previous_decision)
         options_mask |= EXPIRED_PREVIOUS_DECISION;
-      OnCertErrorInternal(handler, options_mask);
+
+      if (handler->GetManager()->controller()->GetWebContents()->GetAutomaticCertHandling())
+        OnCertificateError(handler);
+      else
+        OnCertErrorInternal(handler, options_mask);
+
       break;
     case net::ERR_CERT_NO_REVOCATION_MECHANISM:
       // Ignore this error.
@@ -192,9 +254,25 @@ SecurityStyle SSLPolicy::GetSecurityStyleForResource(
   return SECURITY_STYLE_AUTHENTICATED;
 }
 
+void SSLPolicy::OnAllowCertificate(WebContents* webContents, bool allow)
+{
+  for (SSLCertErrorHandler* handler : SSLCertErrorHandler::GetInstances())
+  {
+    WebContents* tab = handler->GetManager()->controller()->GetWebContents();
+
+    if (tab == webContents)
+    {
+      OnAllowCertificate(scoped_refptr<SSLCertErrorHandler>(handler), allow);
+      return;
+    }
+  }
+}
+
 void SSLPolicy::OnAllowCertificate(scoped_refptr<SSLCertErrorHandler> handler,
                                    bool allow) {
   DCHECK(handler->ssl_info().is_valid());
+  SSLCertErrorHandler::EraseInstance(handler.get());
+
   if (allow) {
     // Default behavior for accepting a certificate.
     // Note that we should not call SetMaxSecurityStyle here, because the active
@@ -232,7 +310,9 @@ void SSLPolicy::OnCertErrorInternal(SSLCertErrorHandler* handler,
       handler->cert_error(), handler->ssl_info(), handler->request_url(),
       handler->resource_type(), overridable, strict_enforcement,
       expired_previous_decision,
-      base::Bind(&SSLPolicy::OnAllowCertificate, base::Unretained(this),
+      base::Bind(static_cast<void (SSLPolicy::*)(scoped_refptr<SSLCertErrorHandler>,
+                   bool)>(&SSLPolicy::OnAllowCertificate),
+                 base::Unretained(this),
                  make_scoped_refptr(handler)),
       &result);
   switch (result) {

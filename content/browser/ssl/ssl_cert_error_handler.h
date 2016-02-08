@@ -33,6 +33,10 @@ class SSLCertErrorHandler : public SSLErrorHandler {
   int cert_error() const { return cert_error_; }
   bool fatal() const { return fatal_; }
 
+  static void InsertInstance(SSLCertErrorHandler* instance);
+  static void EraseInstance(SSLCertErrorHandler* instance);
+  static std::set<SSLCertErrorHandler*> GetInstances();
+
  protected:
   // SSLErrorHandler methods
   void OnDispatchFailed() override;

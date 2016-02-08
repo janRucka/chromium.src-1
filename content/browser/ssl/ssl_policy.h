@@ -55,6 +55,10 @@ class SSLPolicy {
                                                    int cert_id,
                                                    net::CertStatus cert_status);
 
+  void OnAllowCertificate(WebContents* webContents, bool allow);
+
+  void OnCertificateError(SSLCertErrorHandler* handler);
+
  private:
   enum OnCertErrorInternalOptionsMask {
     OVERRIDABLE = 1 << 0,

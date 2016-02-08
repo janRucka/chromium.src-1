@@ -254,6 +254,8 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
   bool IsFullscreenForTabOrPending(
       const content::WebContents* web_contents) const final;
 
+  void OnCertificateError(base::ListValue* certificate) final;
+
   // WebContentsObserver implementation.
   void DidCommitProvisionalLoadForFrame(
       content::RenderFrameHost* render_frame_host,

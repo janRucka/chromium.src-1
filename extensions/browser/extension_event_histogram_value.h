@@ -414,6 +414,7 @@ enum HistogramValue {
   INPUT_IME_ON_COMPOSITION_BOUNDS_CHANGED,
   INPUT_METHOD_PRIVATE_ON_IME_MENU_ACTIVATION_CHANGED,
   INPUT_METHOD_PRIVATE_ON_IME_MENU_LIST_CHANGED,
+  WEB_VIEW_INTERNAL_ON_CERTIFICATE_ERROR,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY

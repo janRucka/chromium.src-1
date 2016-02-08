@@ -11,6 +11,8 @@
 
 namespace content {
 
+  std::set<SSLCertErrorHandler*>* instances = nullptr;
+
 SSLCertErrorHandler::SSLCertErrorHandler(
     const base::WeakPtr<Delegate>& delegate,
     ResourceType resource_type,
@@ -41,6 +43,34 @@ void SSLCertErrorHandler::OnDispatched() {
   manager_->policy()->OnCertError(this);
 }
 
-SSLCertErrorHandler::~SSLCertErrorHandler() {}
+void SSLCertErrorHandler::InsertInstance(SSLCertErrorHandler* instance) {
+  if (!instances)
+    instances = new std::set<SSLCertErrorHandler*>();
+
+  instances->insert(instance);
+}
+
+void SSLCertErrorHandler::EraseInstance(SSLCertErrorHandler* instance) {
+  if (!instances)
+    return;
+
+  instances->erase(instance);
+
+  if (instances->size() == 0) {
+    delete instances;
+    instances = nullptr;
+  }
+}
+
+std::set<SSLCertErrorHandler*> SSLCertErrorHandler::GetInstances() {
+  if (!instances)
+    return std::set<SSLCertErrorHandler*>();
+  else
+    return *instances;
+}
+
+SSLCertErrorHandler::~SSLCertErrorHandler() {
+  EraseInstance(this);
+}
 
 }  // namespace content

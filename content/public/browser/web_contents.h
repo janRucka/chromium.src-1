@@ -513,6 +513,21 @@ class WebContents : public PageNavigator,
 
   // Misc state & callbacks ----------------------------------------------------
 
+  // Webview callback for certificate error
+  virtual void OnCertificateError(scoped_ptr<base::ListValue> certificate) const = 0;
+
+  // Webview callback setter for certificate error
+  virtual void SetCertificateErrorCallback(base::Callback<void(WebContents*, bool)> callback) = 0;
+
+  // Webview callback getter for certificate error
+  virtual base::Callback<void(WebContents*, bool)> GetCertificateErrorCallback() const = 0;
+
+  // Get whether certificates are handled automatically or via user interaction
+  virtual bool GetAutomaticCertHandling() = 0;
+
+  // Set whether certificates are handled automatically or via user interaction
+  virtual void SetAutomaticCertHandling(bool automaticCertHandling) = 0;
+
   // Check whether we can do the saving page operation this page given its MIME
   // type.
   virtual bool IsSavable() = 0;

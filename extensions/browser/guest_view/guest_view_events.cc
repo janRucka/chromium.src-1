@@ -37,6 +37,8 @@ class EventMap {
         {extensionview::kEventLoadCommit,
          events::EXTENSION_VIEW_INTERNAL_ON_LOAD_COMMIT},
         {guest_view::kEventResize, events::GUEST_VIEW_INTERNAL_ON_RESIZE},
+        {webview::kEventCertificateError,
+         events::WEB_VIEW_INTERNAL_ON_CERTIFICATE_ERROR },
         {webview::kEventBeforeRequest,
          events::WEB_VIEW_INTERNAL_ON_BEFORE_REQUEST},
         {webview::kEventBeforeSendHeaders,

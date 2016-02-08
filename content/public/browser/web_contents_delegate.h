@@ -534,6 +534,9 @@ class CONTENT_EXPORT WebContentsDelegate {
   // Requests the app banner. This method is called from the DevTools.
   virtual bool RequestAppBanner(content::WebContents* web_contents);
 
+  // Called when CertificateError occurs
+  virtual void OnCertificateError(base::ListValue* certificate) {}
+
  protected:
   virtual ~WebContentsDelegate();
 
