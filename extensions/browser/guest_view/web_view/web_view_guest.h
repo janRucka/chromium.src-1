@@ -253,6 +253,7 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
   void ExitFullscreenModeForTab(content::WebContents* web_contents) final;
   bool IsFullscreenForTabOrPending(
       const content::WebContents* web_contents) const final;
+  void VisibleSSLStateChanged(const content::WebContents* source) final;
 
   void OnCertificateError(base::ListValue* certificate) final;
 
