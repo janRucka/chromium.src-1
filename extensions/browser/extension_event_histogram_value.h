@@ -422,6 +422,7 @@ enum HistogramValue {
   ACCESSIBILITY_PRIVATE_ON_ACCESSIBILITY_GESTURE,
   QUICK_UNLOCK_PRIVATE_ON_ACTIVE_MODES_CHANGED,
   CLIPBOARD_ON_CLIPBOARD_DATA_CHANGED,
+  WEB_VIEW_INTERNAL_ON_SSL_CHANGE,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY

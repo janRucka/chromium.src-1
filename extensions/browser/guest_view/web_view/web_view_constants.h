@@ -51,6 +51,7 @@ extern const char kEventPermissionRequest[];
 extern const char kEventResponseStarted[];
 extern const char kEventResponsive[];
 extern const char kEventSizeChanged[];
+extern const char kEventSSLChange[];
 extern const char kEventUnresponsive[];
 extern const char kEventZoomChange[];
 
@@ -67,6 +68,7 @@ extern const char kEventSendHeaders[];
 extern const char kWebViewEventPrefix[];
 
 // Parameters/properties on events.
+extern const char kCertificate[];
 extern const char kContextMenuItems[];
 extern const char kDefaultPromptText[];
 extern const char kFindSearchText[];
