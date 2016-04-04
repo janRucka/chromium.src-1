@@ -509,10 +509,7 @@ void Dispatcher::DidFinishDocumentLoad(blink::WebLocalFrame* frame) {
   const Extension* extension =
     RendererExtensionRegistry::Get()->GetExtensionOrAppByURL(effective_document_url);
 
-  if (extension &&
-      (extension->is_extension() || extension->is_platform_app())) {
-    nw::DocumentFinishHook(frame, extension, effective_document_url);
-  }
+  nw::DocumentFinishHook(frame, extension, effective_document_url);
 }
 
 void Dispatcher::DidCreateDocumentElement(blink::WebLocalFrame* frame) {

@@ -1409,15 +1409,17 @@ void HWNDMessageHandler::OnGetMinMaxInfo(MINMAXINFO* minmax_info) {
   if (delegate_->WidgetSizeIsClientSize()) {
     RECT client_rect, window_rect;
     GetClientRect(hwnd(), &client_rect);
-    GetWindowRect(hwnd(), &window_rect);
-    CR_DEFLATE_RECT(&window_rect, &client_rect);
-    min_window_size.Enlarge(window_rect.right - window_rect.left,
-                            window_rect.bottom - window_rect.top);
-    // Either axis may be zero, so enlarge them independently.
-    if (max_window_size.width())
-      max_window_size.Enlarge(window_rect.right - window_rect.left, 0);
-    if (max_window_size.height())
-      max_window_size.Enlarge(0, window_rect.bottom - window_rect.top);
+	if (client_rect.right > client_rect.left) {
+		GetWindowRect(hwnd(), &window_rect);
+		CR_DEFLATE_RECT(&window_rect, &client_rect);
+		min_window_size.Enlarge(window_rect.right - window_rect.left,
+			window_rect.bottom - window_rect.top);
+		// Either axis may be zero, so enlarge them independently.
+		if (max_window_size.width())
+			max_window_size.Enlarge(window_rect.right - window_rect.left, 0);
+		if (max_window_size.height())
+			max_window_size.Enlarge(0, window_rect.bottom - window_rect.top);
+	}
   }
   minmax_info->ptMinTrackSize.x = min_window_size.width();
   minmax_info->ptMinTrackSize.y = min_window_size.height();

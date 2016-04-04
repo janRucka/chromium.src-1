@@ -1339,6 +1339,7 @@ void RenderProcessHostImpl::PropagateBrowserCommandLineToRenderer(
   // Propagate the following switches to the renderer command line (along
   // with any associated values) if present in the browser command line.
   static const char* const kSwitchNames[] = {
+    switches::kDisableRAFThrottling,
     switches::kEnableSpellChecking,
     switches::kAgcStartupMinVolume,
     switches::kAllowLoopbackInPeerConnection,

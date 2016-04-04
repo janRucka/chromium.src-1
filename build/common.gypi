@@ -641,7 +641,7 @@
       'use_lld%': 0,
 
       # Enable plugin installation by default.
-      'enable_plugin_installation%': 1,
+      'enable_plugin_installation%': 0,
 
       # Specifies whether to use canvas_skia.cc in place of platform
       # specific implementations of gfx::Canvas. Affects text drawing in the
@@ -914,7 +914,7 @@
         ['chromeos==1 or OS=="android" or OS=="ios" or desktop_linux==1', {
           'enable_plugin_installation%': 0,
         }, {
-          'enable_plugin_installation%': 1,
+          'enable_plugin_installation%': 0,
         }],
 
         # Whether PPAPI is enabled.

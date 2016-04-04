@@ -145,6 +145,7 @@ const char kForceCpuDraw[]                  = "force-cpu-draw";
 
 // Prevent the compositor from using its GPU implementation.
 const char kDisableGpuCompositing[]         = "disable-gpu-compositing";
+const char kDisableRAFThrottling[]          = "disable-raf-throttling";
 
 // Disable proactive early init of GPU process.
 const char kDisableGpuEarlyInit[]           = "disable-gpu-early-init";
