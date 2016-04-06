@@ -12,7 +12,7 @@
 
 namespace content {
 
-  std::set<SSLCertErrorHandler*> instances;
+  std::set<SSLCertErrorHandler*>* instances = nullptr;
 
 SSLCertErrorHandler::SSLCertErrorHandler(
     const base::WeakPtr<Delegate>& delegate,
@@ -45,15 +45,29 @@ void SSLCertErrorHandler::OnDispatched() {
 }
 
 void SSLCertErrorHandler::InsertInstance(SSLCertErrorHandler* instance) {
-  instances.insert(instance);
+  if (!instances)
+    instances = new std::set<SSLCertErrorHandler*>();
+
+  instances->insert(instance);
 }
 
 void SSLCertErrorHandler::EraseInstance(SSLCertErrorHandler* instance) {
-  instances.erase(instance);
+  if (!instances)
+    return;
+
+  instances->erase(instance);
+
+  if (instances->size() == 0) {
+    delete instances;
+    instances = nullptr;
+  }
 }
 
 std::set<SSLCertErrorHandler*> SSLCertErrorHandler::GetInstances() {
-  return instances;
+  if (!instances)
+    return std::set<SSLCertErrorHandler*>();
+  else
+    return *instances;
 }
 
 SSLCertErrorHandler::~SSLCertErrorHandler() {

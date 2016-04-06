@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include <set>
+#include <utility>
 
 #include "content/browser/ssl/ssl_policy.h"
 
@@ -95,7 +96,7 @@ void SSLPolicy::OnCertificateError(SSLCertErrorHandler* handler)
   scoped_ptr<base::ListValue> certificateInfo(new base::ListValue());
   certificateInfo->Append(dict);
 
-  webContents->OnCertificateError(certificateInfo.Pass());
+  webContents->OnCertificateError(std::move(certificateInfo));
 
   webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLPolicy::*)
     (WebContents*, bool)>(&SSLPolicy::OnAllowCertificate),
@@ -312,7 +313,7 @@ void SSLPolicy::OnCertErrorInternal(SSLCertErrorHandler* handler,
       handler->cert_error(), handler->ssl_info(), handler->request_url(),
       handler->resource_type(), overridable, strict_enforcement,
       expired_previous_decision,
-      base::Bind(static_cast<void (SSLPolicy::*)(scoped_refptr<SSLCertErrorHandler>, 
+      base::Bind(static_cast<void (SSLPolicy::*)(scoped_refptr<SSLCertErrorHandler>,
                    bool)>(&SSLPolicy::OnAllowCertificate),
                  base::Unretained(this),
                  make_scoped_refptr(handler)),

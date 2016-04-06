@@ -559,7 +559,7 @@ void WebViewGuest::OnCertificateError(base::ListValue* certificate)
   scoped_ptr<base::DictionaryValue> args(new base::DictionaryValue());
   args->Set(webview::kCertificate, certificate);
   DispatchEventToView(
-    new GuestViewEvent(webview::kEventCertificateError, args.Pass()));
+    new GuestViewEvent(webview::kEventCertificateError, std::move(args)));
 }
 
 double WebViewGuest::GetZoom() const {
@@ -1423,7 +1423,7 @@ void WebViewGuest::VisibleSSLStateChanged(const content::WebContents* source) {
     certificateInfo->Append(dict);
     scoped_ptr<base::DictionaryValue> args(new base::DictionaryValue());
     args->Set(webview::kCertificate, certificateInfo);
-    DispatchEventToView(new GuestViewEvent(webview::kEventSSLChange, args.Pass()));
+    DispatchEventToView(new GuestViewEvent(webview::kEventSSLChange, std::move(args)));
 }
 
 void WebViewGuest::LoadURLWithParams(
