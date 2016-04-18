@@ -267,7 +267,9 @@ bool SetStoreBrowserContext(const UIThreadExtensionFunction* function,
   scoped_refptr<net::URLRequestContextGetter>& storeBrowserContext) {
 
   int instance_id = 0;
-  EXTENSION_FUNCTION_VALIDATE(args->GetInteger(0, &instance_id));
+  if (!args->GetInteger(0, &instance_id))
+    return false;
+
   extensions::WebViewGuest* guest = extensions::WebViewGuest::From(
     function->render_frame_host()->GetProcess()->GetID(), instance_id);
 
