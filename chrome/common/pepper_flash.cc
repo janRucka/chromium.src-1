@@ -121,7 +121,8 @@ bool CheckPepperFlashManifest(const base::DictionaryValue& manifest,
 
   std::string arch;
   manifest.GetStringASCII("x-ppapi-arch", &arch);
-  if (arch != kPepperFlashArch)
+
+  if (arch != kPepperFlashArch && arch != "mac")
     return false;
 
   *version_out = version;
