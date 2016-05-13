@@ -244,6 +244,8 @@
 namespace content {
 namespace {
 
+RenderProcessHost* g_first_host = nullptr;
+
 const char kSiteProcessMapKeyName[] = "content_site_process_map";
 
 #ifdef ENABLE_WEBRTC
@@ -2125,6 +2127,8 @@ bool RenderProcessHostImpl::FastShutdownStarted() const {
 // static
 void RenderProcessHostImpl::RegisterHost(int host_id, RenderProcessHost* host) {
   g_all_hosts.Get().AddWithID(host, host_id);
+  if (g_all_hosts.Get().size() == 1)
+    g_first_host = host;
 }
 
 // static
@@ -2135,6 +2139,8 @@ void RenderProcessHostImpl::UnregisterHost(int host_id) {
 
   g_all_hosts.Get().Remove(host_id);
 
+  if (g_first_host == host)
+    g_first_host = nullptr;
   // Look up the map of site to process for the given browser_context,
   // in case we need to remove this process from it.  It will be registered
   // under any sites it rendered that use process-per-site mode.
@@ -2306,6 +2312,8 @@ RenderProcessHost* RenderProcessHost::GetExistingProcessHost(
     if (GetContentClient()->browser()->MayReuseHost(iter.GetCurrentValue()) &&
         RenderProcessHostImpl::IsSuitableHost(iter.GetCurrentValue(),
                                               browser_context, site_url)) {
+      if (iter.GetCurrentValue() == g_first_host)
+        return g_first_host;
       suitable_renderers.push_back(iter.GetCurrentValue());
     }
     iter.Advance();
