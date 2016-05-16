@@ -50,8 +50,6 @@ bool GetDefaultUserDataDirectory(base::FilePath* result) {
   //BrowserDistribution* dist = BrowserDistribution::GetDistribution();
   if (nw::package()) //FIXME: crashpad initialized early in cr49
     *result = result->Append(base::FilePath::FromUTF8Unsafe(nw::package()->GetName()));
-  else
-    *result = result->Append(base::FilePath::FromUTF8Unsafe("Seznam.cz"));
 
   *result = result->Append(chrome::kUserDataDirname);
   return true;
