@@ -34,7 +34,7 @@ bool MemoryMappedFile::Initialize(const FilePath& file_name) {
   if (IsValid())
     return false;
 
-  file_.Initialize(file_name, File::FLAG_OPEN | File::FLAG_READ);
+  file_.Initialize(file_name, File::FLAG_OPEN | File::FLAG_READ | File::FLAG_SHARE_DELETE);
 
   if (!file_.IsValid()) {
     DLOG(ERROR) << "Couldn't open " << file_name.AsUTF8Unsafe();
