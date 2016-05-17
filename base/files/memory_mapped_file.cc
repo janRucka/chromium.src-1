@@ -46,7 +46,7 @@ bool MemoryMappedFile::Initialize(const FilePath& file_name, Access access) {
       // Can't open with "extend" because no maximum size is known.
       NOTREACHED();
   }
-  file_.Initialize(file_name, flags);
+  file_.Initialize(file_name, flags | File::FLAG_SHARE_DELETE);
 
   if (!file_.IsValid()) {
     DLOG(ERROR) << "Couldn't open " << file_name.AsUTF8Unsafe();

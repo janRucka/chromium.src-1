@@ -142,7 +142,7 @@ base::PlatformFile OpenV8File(const char* file_name,
   const int kOpenRetryDelayMillis = 250;
 
   OpenV8FileResult result = OpenV8FileResult::FAILED_IN_USE;
-  int flags = base::File::FLAG_OPEN | base::File::FLAG_READ;
+  int flags = base::File::FLAG_OPEN | base::File::FLAG_READ | base::File::FLAG_SHARE_DELETE;
   base::File file;
   for (int attempt = 0; attempt < kMaxOpenAttempts; attempt++) {
     file.Initialize(path, flags);
