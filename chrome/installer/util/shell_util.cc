@@ -1620,7 +1620,7 @@ base::string16 ShellUtil::FormatIconLocation(const base::FilePath& icon_path,
 
 base::string16 ShellUtil::GetChromeShellOpenCmd(
     const base::FilePath& chrome_exe) {
-  return L"\"" + chrome_exe.value() + L"\" -- \"%1\"";
+  return L"\"" + chrome_exe.value() + L"\" -surl=\"%1\"";
 }
 
 base::string16 ShellUtil::GetChromeDelegateCommand(
