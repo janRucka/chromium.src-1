@@ -44,6 +44,7 @@
 #include "content/public/common/content_client.h"
 #include "content/public/common/content_switches.h"
 #include "content/public/common/drop_data.h"
+#include "content/nw/src/nw_content.h"
 #include "net/base/filename_util.h"
 #include "third_party/WebKit/public/web/WebInputEvent.h"
 #include "ui/aura/client/aura_constants.h"
@@ -1202,6 +1203,13 @@ void WebContentsViewAura::OnMouseEvent(ui::MouseEvent* event) {
   ui::EventType type = event->type();
   if (type == ui::ET_MOUSE_PRESSED)
       web_contents_->GetDelegate()->ActivateContents(web_contents_);
+
+  if (event->native_event().message == 523) { // WM_XBUTTONDOWN
+    if (event->native_event().wParam == 65568) // backward
+      nw::OnMouseButtonFwdBwd(false);
+    else if (event->native_event().wParam == 131136) // forward
+      nw::OnMouseButtonFwdBwd(true);
+  }
 
   web_contents_->GetDelegate()->ContentsMouseEvent(
       web_contents_, gfx::Screen::GetScreen()->GetCursorScreenPoint(),
