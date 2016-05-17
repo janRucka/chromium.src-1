@@ -729,13 +729,13 @@ For Chromium, processes used to display diagnostics information (such as this "a
 
       <if expr="is_macosx">
         <message name="IDS_APP_MENU_PRODUCT_NAME" desc="The application's short name, used for the Mac's application menu, activity monitor, etc. This should be less than 16 characters. Example: Chrome, not Google Chrome.">
-          Seznam.cz
+          nwjs
         </message>
         <message name="IDS_HELPER_NAME" desc="The helper application's name.  Should contain the Chrome application name (IDS_PRODUCT_NAME). Example: Google Chrome Helper.">
-          Seznam.cz Helper
+          nwjs Helper
         </message>
         <message name="IDS_SHORT_HELPER_NAME" desc="The helper application's short name, used for the Mac's application menu, activity monitor, etc. Example: Chrome Helper, not Google Chrome Helper.">
-          Seznam.cz Helper
+          nwjs Helper
         </message>
       </if>
 
