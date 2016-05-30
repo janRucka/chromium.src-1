@@ -390,7 +390,7 @@ DefaultWebClientSetPermission CanSetAsDefaultBrowser() {
     return SET_DEFAULT_NOT_ALLOWED;
   if (ShellUtil::CanMakeChromeDefaultUnattended())
     return SET_DEFAULT_UNATTENDED;
-  if (IsSetAsDefaultAsynchronous())
+  if (base::win::GetVersion() < base::win::VERSION_WIN10 && IsSetAsDefaultAsynchronous())
     return SET_DEFAULT_ASYNCHRONOUS;
   return SET_DEFAULT_INTERACTIVE;
 }
