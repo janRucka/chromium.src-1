@@ -7,6 +7,8 @@
 #include "components/crash/content/app/crash_reporter_client.h"
 #include <stdint.h>
 
+#include "content/nw/src/nw_content.h"
+
 #include <map>
 #include <memory>
 #include <tuple>
@@ -454,6 +456,10 @@ std::string GetUserAgent() {
       return ua;
     LOG(WARNING) << "Ignored invalid value for flag --" << switches::kUserAgent;
   }
+
+  std::string ua;
+  if (nw::GetUserAgentFromManifest(&ua))
+    return ua;
 
   std::string product = GetProduct();
 #if defined(OS_ANDROID)
