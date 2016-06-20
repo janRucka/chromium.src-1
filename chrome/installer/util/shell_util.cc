@@ -672,34 +672,15 @@ bool ElevateAndRegisterChrome(BrowserDistribution* dist,
   // register.
   DCHECK(InstallUtil::IsPerUserInstall(chrome_exe));
   DCHECK_LT(base::win::GetVersion(), base::win::VERSION_WIN8);
-  base::FilePath exe_path = chrome_exe.DirName().Append(installer::kSetupExe);
-  if (!base::PathExists(exe_path)) {
-    HKEY reg_root = InstallUtil::IsPerUserInstall(chrome_exe) ?
-        HKEY_CURRENT_USER : HKEY_LOCAL_MACHINE;
-    RegKey key(reg_root,
-               dist->GetUninstallRegPath().c_str(),
-               KEY_READ | KEY_WOW64_32KEY);
-    base::string16 uninstall_string;
-    key.ReadValue(installer::kUninstallStringField, &uninstall_string);
-    base::CommandLine command_line =
-        base::CommandLine::FromString(uninstall_string);
-    exe_path = command_line.GetProgram();
-  }
 
-  if (base::PathExists(exe_path)) {
-    base::CommandLine cmd(exe_path);
-    cmd.AppendSwitchPath(installer::switches::kRegisterChromeBrowser,
+  base::CommandLine& command_line = *base::CommandLine::ForCurrentProcess();
+  if (command_line.HasSwitch(switches::kMakeDefaultBrowser))
+    return false;
+
+  if (base::PathExists(chrome_exe)) {
+    base::CommandLine cmd(chrome_exe);
+    cmd.AppendSwitchPath(switches::kMakeDefaultBrowser,
                          chrome_exe);
-    if (!suffix.empty()) {
-      cmd.AppendSwitchNative(
-          installer::switches::kRegisterChromeBrowserSuffix, suffix);
-    }
-
-    if (!protocol.empty()) {
-      cmd.AppendSwitchNative(
-        installer::switches::kRegisterURLProtocol, protocol);
-    }
-
     DWORD ret_val = 0;
     InstallUtil::ExecuteExeAsAdmin(cmd, &ret_val);
     if (ret_val == 0)
