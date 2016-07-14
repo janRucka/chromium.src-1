@@ -915,6 +915,9 @@ ExtensionFunction::ResponseAction WebViewInternalSetPermissionFunction::Run() {
       web_view_permission_helper->SetPermission(
           params->request_id, action, user_input);
 
+  if (result == WebViewPermissionHelper::SET_PERMISSION_INVALID)
+    result = WebViewPermissionHelper::SET_PERMISSION_DENIED;
+
   EXTENSION_FUNCTION_VALIDATE(result !=
                               WebViewPermissionHelper::SET_PERMISSION_INVALID);
 
