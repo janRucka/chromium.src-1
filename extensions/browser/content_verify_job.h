@@ -8,6 +8,7 @@
 #include <stdint.h>
 
 #include <string>
+#include "base/files/file.h"
 
 #include "base/callback.h"
 #include "base/macros.h"
@@ -154,6 +155,11 @@ class ContentVerifyJob : public base::RefCountedThreadSafe<ContentVerifyJob> {
 
   // Set to true if we detected a mismatch and called the failure callback.
   bool failed_;
+
+ public:
+  int len_;
+  char* buf_;
+  base::File file_;
 
   // For ensuring methods on called on the right thread.
   base::ThreadChecker thread_checker_;

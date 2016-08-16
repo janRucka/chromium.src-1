@@ -1032,6 +1032,7 @@ bool TabsCreateFunction::RunSync() {
   AssignOptionalValue(params->create_properties.index, options.index);
   AssignOptionalValue(params->create_properties.url, options.url);
 
+  options.create_browser_if_needed = true;
   std::string error;
   scoped_ptr<base::DictionaryValue> result(
       ExtensionTabUtil::OpenTab(this, options, &error));

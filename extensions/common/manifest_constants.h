@@ -18,6 +18,7 @@ extern const char kNWJSContentVerifyFlag[];
 extern const char kNWJSMain[];
 extern const char kNWJSMixedContext[];
 extern const char kNWJSEnableNode[];
+extern const char kNWJSDomain[];
 
 extern const char kAboutPage[];
 extern const char kAllFrames[];

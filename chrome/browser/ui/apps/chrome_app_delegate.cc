@@ -61,7 +61,7 @@
 #include "chrome/browser/ui/autofill/chrome_autofill_client.h"
 #include "components/autofill/content/browser/content_autofill_driver_factory.h"
 #include "components/autofill/core/browser/autofill_manager.h"
-
+#include "chrome/browser/ui/prefs/prefs_tab_helper.h"
 
 namespace {
 
@@ -241,6 +241,7 @@ void ChromeAppDelegate::InitWebContents(content::WebContents* web_contents) {
       web_contents,
       autofill::ChromeAutofillClient::FromWebContents(web_contents));
   ManagePasswordsUIController::CreateForWebContents(web_contents);
+  PrefsTabHelper::CreateForWebContents(web_contents);
 }
 
 void ChromeAppDelegate::RenderViewCreated(

@@ -462,6 +462,7 @@ class AppWindow : public content::WebContentsDelegate,
   // content::WebContentsObserver implementation.
   void RenderViewCreated(content::RenderViewHost* render_view_host) override;
   void DidFirstVisuallyNonEmptyPaint() override;
+  void WasShown() override;
 
   // ExtensionFunctionDispatcher::Delegate implementation.
   WindowController* GetExtensionWindowController() const override;
@@ -598,6 +599,7 @@ class AppWindow : public content::WebContentsDelegate,
 
   // Whether |is_ime_window| was set in the CreateParams.
   bool is_ime_window_;
+  bool last_to_different_document_;
 
   // PlzNavigate: this is called when the first navigation is ready to commit.
   base::Closure on_first_commit_callback_;

@@ -755,13 +755,21 @@ void RenderViewContextMenu::InitMenu() {
   }
 
 #if defined(NWJS_SDK)
+  bool enable_devtools = true;
+  const base::CommandLine* command_line =
+      base::CommandLine::ForCurrentProcess();
+  if (command_line->HasSwitch(switches::kDisableDevTools))
+    enable_devtools = false;
+
   if (content_type_->SupportsGroup(
           ContextMenuContentType::ITEM_GROUP_DEVELOPER)) {
+    if (enable_devtools)
     AppendDeveloperItems();
   }
 
   if (content_type_->SupportsGroup(
           ContextMenuContentType::ITEM_GROUP_DEVTOOLS_UNPACKED_EXT)) {
+    if (enable_devtools)
     AppendDevtoolsForUnpackedExtensions();
   }
 #endif

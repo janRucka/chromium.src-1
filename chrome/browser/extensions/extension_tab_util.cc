@@ -141,7 +141,7 @@ base::DictionaryValue* ExtensionTabUtil::OpenTab(
     if (!browser)
       return NULL;
   }
-
+#if 0
   // Ensure the selected browser is tabbed.
   if (!browser->is_type_tabbed() && browser->IsAttemptingToCloseBrowser())
     browser = chrome::FindTabbedBrowser(function->GetProfile(),
@@ -151,7 +151,7 @@ base::DictionaryValue* ExtensionTabUtil::OpenTab(
       *error = keys::kNoCurrentWindowError;
     return NULL;
   }
-
+#endif
   // TODO(jstritar): Add a constant, chrome.tabs.TAB_ID_ACTIVE, that
   // represents the active tab.
   WebContents* opener = NULL;
