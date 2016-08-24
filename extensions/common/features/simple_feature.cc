@@ -377,6 +377,10 @@ Feature::Availability SimpleFeature::IsAvailableToManifest(
   if (type == Manifest::TYPE_NWJS_APP) {
     if (!platforms_.empty() && !ContainsValue(platforms_, platform))
       return CreateAvailability(INVALID_PLATFORM, type);
+    if (!extension_types_.empty() && name_ == "devtools_page" && //NWJS#4959
+        !ContainsValue(extension_types_, type_to_check)) {
+      return CreateAvailability(INVALID_TYPE, type);
+    }
   } else {
 
   if (!extension_types_.empty() &&

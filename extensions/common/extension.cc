@@ -481,8 +481,13 @@ bool Extension::InitExtensionID(extensions::Manifest* manifest,
 
   if (manifest->HasKey(keys::kNWJSInternalFlag)) {
     std::string name;
+    std::string domain;
     manifest->GetString(keys::kName, &name);
-    manifest->set_extension_id(crx_file::id_util::GenerateId(name));
+    manifest->GetString(keys::kNWJSDomain, &domain);
+    if (!domain.empty())
+      manifest->set_extension_id(domain);
+    else
+      manifest->set_extension_id(crx_file::id_util::GenerateId(name));
     return true;
   }
 

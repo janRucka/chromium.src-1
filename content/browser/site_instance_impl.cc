@@ -5,6 +5,7 @@
 #include "content/browser/site_instance_impl.h"
 
 #include "content/nw/src/nw_content.h"
+#include "extensions/common/constants.h"
 
 #include "content/browser/browsing_instance.h"
 #include "content/browser/child_process_security_policy_impl.h"
@@ -322,6 +323,11 @@ GURL SiteInstance::GetSiteForURL(BrowserContext* browser_context,
     // Only keep the scheme and registered domain as given by GetOrigin.  This
     // may also include a port, which we need to drop.
     GURL site = url.GetOrigin();
+
+    //NWJS: chrome-extension://test.foo.com was changed to foo.com
+    //without this
+    if (real_url.SchemeIs(extensions::kExtensionScheme))
+      return site;
 
     // Remove port, if any.
     if (site.has_port()) {

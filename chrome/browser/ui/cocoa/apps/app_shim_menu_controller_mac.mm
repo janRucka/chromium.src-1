@@ -27,6 +27,7 @@ using extensions::Extension;
 #include "chrome/browser/devtools/devtools_window.h"
 
 #include "content/nw/src/api/menu/menu.h"
+#include "content/nw/src/common/shell_switches.h"
 
 namespace {
 
@@ -483,6 +484,13 @@ void SetChromeCyclesWindows(int sequence_number) {
   [[windowMenuItem_ submenu] addItem:[NSMenuItem separatorItem]];
   [[windowMenuItem_ submenu] addItem:[allToFrontDoppelganger_ menuItem]];
 #if defined(NWJS_SDK)
+  bool enable_devtools = true;
+  const base::CommandLine* command_line =
+      base::CommandLine::ForCurrentProcess();
+  if (command_line->HasSwitch(switches::kDisableDevTools))
+    enable_devtools = false;
+
+  if (enable_devtools) {
   [[windowMenuItem_ submenu] setAutoenablesItems:NO];
   NSMenuItem* item = [[NSMenuItem alloc]
 		      initWithTitle:@"Devtools"
@@ -493,6 +501,7 @@ void SetChromeCyclesWindows(int sequence_number) {
   [item setEnabled:YES];
   [item setKeyEquivalentModifierMask:NSCommandKeyMask | NSAlternateKeyMask];
   [[windowMenuItem_ submenu] addItem:item];
+  }
 #endif
 }
 

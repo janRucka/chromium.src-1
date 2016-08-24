@@ -22,7 +22,9 @@
 #include "ui/views/widget/widget.h"
 
 #if defined(NWJS_SDK)
+#include "base/command_line.h"
 #include "chrome/browser/devtools/devtools_window.h"
+#include "content/nw/src/common/shell_switches.h"
 #endif
 
 #include "ui/gfx/screen.h"
@@ -335,6 +337,11 @@ bool ChromeNativeAppWindowViews::AcceleratorPressed(
   int command_id = iter->second;
 #if defined(NWJS_SDK)
   content::WebContents* web_contents;
+  bool enable_devtools = true;
+  const base::CommandLine* command_line =
+      base::CommandLine::ForCurrentProcess();
+  if (command_line->HasSwitch(switches::kDisableDevTools))
+    enable_devtools = false;
 #endif
   switch (command_id) {
     case IDC_CLOSE_WINDOW:
@@ -354,12 +361,16 @@ bool ChromeNativeAppWindowViews::AcceleratorPressed(
       return true;
 #if defined(NWJS_SDK)
     case IDC_DEV_TOOLS:
+      if (!enable_devtools)
+        return true;
       web_contents = app_window()->web_contents();
       if (web_contents) {
         DevToolsWindow::OpenDevToolsWindow(web_contents);
       }
       return true;
     case IDC_DEV_TOOLS_TOGGLE:
+      if (!enable_devtools)
+        return true;
       web_contents = app_window()->web_contents();
       if (web_contents) {
         DevToolsWindow::OpenDevToolsWindow(web_contents, DevToolsToggleAction::Toggle());

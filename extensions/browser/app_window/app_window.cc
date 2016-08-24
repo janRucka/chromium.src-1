@@ -4,6 +4,8 @@
 
 #include "extensions/browser/app_window/app_window.h"
 
+#include "components/web_cache/browser/web_cache_manager.h"
+#include "content/public/browser/render_process_host.h"
 #include <stddef.h>
 
 #include <algorithm>
@@ -276,6 +278,7 @@ AppWindow::AppWindow(BrowserContext* context,
       cached_always_on_top_(false),
       requested_alpha_enabled_(false),
       is_ime_window_(false),
+      last_to_different_document_(false),
       image_loader_ptr_factory_(this) {
   ExtensionsBrowserClient* client = ExtensionsBrowserClient::Get();
   CHECK(!client->IsGuestSession(context) || context->IsOffTheRecord())
@@ -284,10 +287,16 @@ AppWindow::AppWindow(BrowserContext* context,
 
 void AppWindow::LoadingStateChanged(content::WebContents* source, bool to_different_document) {
   base::ListValue args;
-  if (source->IsLoading())
+  if (source->IsLoading()) {
     args.AppendString("loading");
-  else
+    last_to_different_document_ = to_different_document;
+    if (!to_different_document) //NWJS#5001
+      return;
+  } else {
+    if (!last_to_different_document_)
+      return;
     args.AppendString("loaded");
+  }
   content::RenderFrameHost* rfh = web_contents()->GetMainFrame();
   rfh->Send(new ExtensionMsg_MessageInvoke(rfh->GetRoutingID(),
                                            extension_id(),
@@ -1249,6 +1258,11 @@ content::JavaScriptDialogManager* AppWindow::GetJavaScriptDialogManager(
   ExtensionHost* host = ProcessManager::Get(browser_context())
                             ->GetBackgroundHostForExtension(extension_id());
   return host->GetJavaScriptDialogManager(source);
+}
+
+void AppWindow::WasShown() {
+  web_cache::WebCacheManager::GetInstance()->ObserveActivity(
+      web_contents()->GetRenderProcessHost()->GetID());
 }
 
 }  // namespace extensions

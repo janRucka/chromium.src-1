@@ -224,8 +224,10 @@ bool ContentHashFetcherJob::LoadVerifiedContents(const base::FilePath& path) {
   verified_contents_.reset(new VerifiedContents(key_.data, key_.size));
   if (!verified_contents_->InitFrom(path, false)) {
     verified_contents_.reset();
+#if 0
     if (!base::DeleteFile(path, false))
       LOG(WARNING) << "Failed to delete " << path.value();
+#endif
     return false;
   }
   return true;
