@@ -30,6 +30,7 @@ extern const char kAPILoadDataInvalidVirtualURL[];
 
 // Events.
 extern const char kEventCertificateError[];
+extern const char kEventSubFrameCertificateError[];
 extern const char kEventClose[];
 extern const char kEventConsoleMessage[];
 extern const char kEventContentLoad[];

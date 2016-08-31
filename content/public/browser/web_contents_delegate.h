@@ -537,6 +537,9 @@ class CONTENT_EXPORT WebContentsDelegate {
   // Called when CertificateError occurs
   virtual void OnCertificateError(base::ListValue* certificate) {}
 
+  // Called when CertificateError in sub-frame occurs
+  virtual void OnSubFrameCertificateError(base::ListValue* certificate) {}
+
  protected:
   virtual ~WebContentsDelegate();
 

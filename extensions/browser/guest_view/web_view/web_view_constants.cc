@@ -24,6 +24,7 @@ const char kAPILoadDataInvalidVirtualURL[] = "Invalid virtual URL \"%s\".";
 
 // Events.
 const char kEventCertificateError[] = "webViewInternal.onCertificateError";
+const char kEventSubFrameCertificateError[] = "webViewInternal.onSubFrameCertificateError";
 const char kEventClose[] = "webViewInternal.onClose";
 const char kEventConsoleMessage[] = "webViewInternal.onConsoleMessage";
 const char kEventContentLoad[] = "webViewInternal.onContentLoad";

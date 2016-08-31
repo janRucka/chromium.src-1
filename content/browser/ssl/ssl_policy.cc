@@ -59,13 +59,17 @@ static base::ListValue *ListValue_FromStringArray(const std::vector<std::string>
 void SSLPolicy::OnCertificateError(SSLCertErrorHandler* handler)
 {
   WebContents* webContents = handler->GetManager()->controller()->GetWebContents();
+  bool isMainFrame = handler->resource_type() == content::RESOURCE_TYPE_MAIN_FRAME;
 
-  // remove potential pending instances
-  for (SSLCertErrorHandler* handler : SSLCertErrorHandler::GetInstances()) {
-    WebContents* tab = handler->GetManager()->controller()->GetWebContents();
-    if (tab == webContents) {
-      SSLCertErrorHandler::EraseInstance(handler);
-      break;
+  if (isMainFrame)
+  {
+    // remove potential pending instances
+    for (SSLCertErrorHandler* handler : SSLCertErrorHandler::GetInstances()) {
+      WebContents* tab = handler->GetManager()->controller()->GetWebContents();
+      if (tab == webContents) {
+        SSLCertErrorHandler::EraseInstance(handler);
+        break;
+      }
     }
   }
 
@@ -93,11 +97,18 @@ void SSLPolicy::OnCertificateError(SSLCertErrorHandler* handler)
   scoped_ptr<base::ListValue> certificateInfo(new base::ListValue());
   certificateInfo->Append(dict);
 
-  webContents->OnCertificateError(std::move(certificateInfo));
-
-  webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLPolicy::*)
-    (WebContents*, bool)>(&SSLPolicy::OnAllowCertificate),
-    base::Unretained(this)));
+  if (isMainFrame)
+  {
+    webContents->OnCertificateError(std::move(certificateInfo));
+    webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLPolicy::*)
+      (WebContents*, bool)>(&SSLPolicy::OnAllowCertificate),
+      base::Unretained(this)));
+  }
+  else
+  {
+    handler->DenyRequest();
+    webContents->OnSubFrameCertificateError(std::move(certificateInfo));
+  }
 }
 
 void SSLPolicy::OnCertError(SSLCertErrorHandler* handler) {

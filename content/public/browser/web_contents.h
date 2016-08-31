@@ -516,6 +516,9 @@ class WebContents : public PageNavigator,
   // Webview callback for certificate error
   virtual void OnCertificateError(scoped_ptr<base::ListValue> certificate) const = 0;
 
+  // Webview callback for certificate error in subframe
+  virtual void OnSubFrameCertificateError(scoped_ptr<base::ListValue> certificate) const = 0;
+
   // Webview callback setter for certificate error
   virtual void SetCertificateErrorCallback(base::Callback<void(WebContents*, bool)> callback) = 0;
 
