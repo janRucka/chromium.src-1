@@ -29,8 +29,8 @@ extern const char kAPILoadDataInvalidBaseURL[];
 extern const char kAPILoadDataInvalidVirtualURL[];
 
 // Events.
+extern const char kEventBlockedUnauthorizedPlugin[];
 extern const char kEventCertificateError[];
-extern const char kEventSubFrameCertificateError[];
 extern const char kEventClose[];
 extern const char kEventConsoleMessage[];
 extern const char kEventContentLoad[];
@@ -54,6 +54,7 @@ extern const char kEventPermissionRequest[];
 extern const char kEventResponseStarted[];
 extern const char kEventResponsive[];
 extern const char kEventSizeChanged[];
+extern const char kEventSubFrameCertificateError[];
 extern const char kEventUnresponsive[];
 extern const char kEventZoomChange[];
 extern const char kEventSSLChange[];

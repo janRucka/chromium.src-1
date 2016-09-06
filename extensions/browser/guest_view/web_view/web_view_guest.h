@@ -148,6 +148,8 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
 
   ScriptExecutor* script_executor() { return script_executor_.get(); }
 
+  void OnBlockedUnauthorizedPlugin(base::DictionaryValue* info);
+
  private:
   friend class WebViewPermissionHelper;
 

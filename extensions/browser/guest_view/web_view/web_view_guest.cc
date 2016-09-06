@@ -388,6 +388,12 @@ void WebViewGuest::DidDropLink(const GURL& url) {
       new GuestViewEvent(webview::kEventDropLink, std::move(args))));
 }
 
+void WebViewGuest::OnBlockedUnauthorizedPlugin(base::DictionaryValue* info) {
+  scoped_ptr<base::DictionaryValue> args(info);
+  DispatchEventToView(make_scoped_ptr(
+    new GuestViewEvent(webview::kEventBlockedUnauthorizedPlugin, std::move(args))));
+}
+
 void WebViewGuest::DidInitialize(const base::DictionaryValue& create_params) {
   script_executor_.reset(
       new ScriptExecutor(web_contents(), &script_observers_));
