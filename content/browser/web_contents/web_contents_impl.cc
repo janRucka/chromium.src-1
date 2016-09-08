@@ -2565,6 +2565,11 @@ void WebContentsImpl::OnCertificateError(scoped_ptr<base::ListValue> certificate
     delegate_->OnCertificateError(certificate.release());
 }
 
+void WebContentsImpl::OnSubFrameCertificateError(scoped_ptr<base::ListValue> certificate) const {
+  if (delegate_)
+    delegate_->OnSubFrameCertificateError(certificate.release());
+}
+
 void WebContentsImpl::SetCertificateErrorCallback(base::Callback<void(WebContents*, bool)> callback) {
   certErrorCallback_ = callback;
 }

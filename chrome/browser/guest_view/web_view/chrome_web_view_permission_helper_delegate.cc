@@ -80,6 +80,7 @@ void ChromeWebViewPermissionHelperDelegate::OnBlockedUnauthorizedPlugin(
   base::DictionaryValue info;
   info.SetString(std::string(kPluginName), name);
   info.SetString(std::string(kPluginIdentifier), identifier);
+  web_view_permission_helper()->web_view_guest()->OnBlockedUnauthorizedPlugin(info.DeepCopy());
   web_view_permission_helper()->RequestPermission(
       WEB_VIEW_PERMISSION_TYPE_LOAD_PLUGIN,
       info,

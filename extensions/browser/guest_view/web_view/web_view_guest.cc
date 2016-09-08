@@ -388,6 +388,12 @@ void WebViewGuest::DidDropLink(const GURL& url) {
       new GuestViewEvent(webview::kEventDropLink, std::move(args))));
 }
 
+void WebViewGuest::OnBlockedUnauthorizedPlugin(base::DictionaryValue* info) {
+  scoped_ptr<base::DictionaryValue> args(info);
+  DispatchEventToView(make_scoped_ptr(
+    new GuestViewEvent(webview::kEventBlockedUnauthorizedPlugin, std::move(args))));
+}
+
 void WebViewGuest::DidInitialize(const base::DictionaryValue& create_params) {
   script_executor_.reset(
       new ScriptExecutor(web_contents(), &script_observers_));
@@ -559,6 +565,14 @@ void WebViewGuest::OnCertificateError(base::ListValue* certificate)
   args->Set(webview::kCertificate, certificate);
   DispatchEventToView(make_scoped_ptr(
     new GuestViewEvent(webview::kEventCertificateError, std::move(args))));
+}
+
+void WebViewGuest::OnSubFrameCertificateError(base::ListValue* certificate)
+{
+  scoped_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->Set(webview::kCertificate, certificate);
+  DispatchEventToView(make_scoped_ptr(
+    new GuestViewEvent(webview::kEventSubFrameCertificateError, std::move(args))));
 }
 
 double WebViewGuest::GetZoom() const {

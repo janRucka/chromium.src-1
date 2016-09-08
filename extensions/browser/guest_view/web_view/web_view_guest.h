@@ -148,6 +148,8 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
 
   ScriptExecutor* script_executor() { return script_executor_.get(); }
 
+  void OnBlockedUnauthorizedPlugin(base::DictionaryValue* info);
+
  private:
   friend class WebViewPermissionHelper;
 
@@ -256,6 +258,7 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
   void VisibleSSLStateChanged(const content::WebContents* source) final;
 
   void OnCertificateError(base::ListValue* certificate) final;
+  void OnSubFrameCertificateError(base::ListValue* certificate) final;
 
   // WebContentsObserver implementation.
   void DidCommitProvisionalLoadForFrame(
