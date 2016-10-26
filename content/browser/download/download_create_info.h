@@ -109,6 +109,9 @@ struct CONTENT_EXPORT DownloadCreateInfo {
   // For continuing a download, the ETag of the file.
   std::string etag;
 
+  // PartitionId if available from webview
+  std::string partition_id;
+
  private:
   DISALLOW_COPY_AND_ASSIGN(DownloadCreateInfo);
 };
