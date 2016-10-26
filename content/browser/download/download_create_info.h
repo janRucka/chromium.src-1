@@ -113,6 +113,9 @@ struct CONTENT_EXPORT DownloadCreateInfo {
   // If "Accept-Ranges:bytes" header presents in the response header.
   bool accept_range;
 
+  // PartitionId if available from webview
+  std::string partition_id;
+
  private:
   DISALLOW_COPY_AND_ASSIGN(DownloadCreateInfo);
 };
