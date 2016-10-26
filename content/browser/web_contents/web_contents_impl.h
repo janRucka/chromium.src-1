@@ -734,6 +734,9 @@ class CONTENT_EXPORT WebContentsImpl
     return media_web_contents_observer_.get();
   }
 
+  // PartitionId if available from webview
+  std::string GetPartitionId();
+
  private:
   friend class WebContentsObserver;
   friend class WebContents;  // To implement factory methods.

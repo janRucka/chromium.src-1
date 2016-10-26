@@ -189,6 +189,7 @@ void DownloadResourceHandler::OnStart(
   create_info->request_handle.reset(new DownloadRequestHandle(
       AsWeakPtr(), request_info->GetWebContentsGetterForRequest()));
 
+  create_info->partition_id = request_info->GetWebContentsGetterForRequest().Run()->GetPartitionId();
   BrowserThread::PostTask(
       BrowserThread::UI, FROM_HERE,
       base::Bind(&StartOnUIThread, base::Passed(&create_info),
