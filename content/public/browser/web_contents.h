@@ -435,6 +435,9 @@ class WebContents : public PageNavigator,
       WebContents* outer_web_contents,
       RenderFrameHost* outer_contents_frame) = 0;
 
+  // Get Partition Id
+  virtual std::string GetPartitionId() = 0;
+
   // Commands ------------------------------------------------------------------
 
   // Stop any pending navigation.

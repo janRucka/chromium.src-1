@@ -198,6 +198,7 @@ DownloadItemImpl::DownloadItemImpl(DownloadItemImplDelegate* delegate,
       etag_(info.etag),
       net_log_(net_log),
       weak_ptr_factory_(this) {
+  SetPartitionId(info.partition_id);
   delegate_->Attach();
   Init(true /* actively downloading */, SRC_ACTIVE_DOWNLOAD);
 
@@ -565,6 +566,14 @@ std::string DownloadItemImpl::GetOriginalMimeType() const {
 std::string DownloadItemImpl::GetRemoteAddress() const {
   return remote_address_;
 }
+
+std::string DownloadItemImpl::GetPartitionId() const {
+  return partitionId_;
+};
+
+void DownloadItemImpl::SetPartitionId(std::string partitionId) {
+  partitionId_ = partitionId;
+};
 
 bool DownloadItemImpl::HasUserGesture() const {
   return has_user_gesture_;

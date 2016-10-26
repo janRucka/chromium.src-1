@@ -238,6 +238,8 @@ class CONTENT_EXPORT DownloadItem : public base::SupportsUserData {
 
   // Remote address of server serving download contents.
   virtual std::string GetRemoteAddress() const = 0;
+  virtual std::string GetPartitionId() const = 0;
+  virtual void SetPartitionId(std::string partitionId) = 0;
 
   // Whether the download request was initiated in response to a user gesture.
   virtual bool HasUserGesture() const = 0;

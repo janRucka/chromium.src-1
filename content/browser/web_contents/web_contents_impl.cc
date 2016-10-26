@@ -2934,6 +2934,12 @@ void WebContentsImpl::SaveFrameWithHeaders(const GURL& url,
   dlm->DownloadUrl(std::move(params));
 }
 
+std::string WebContentsImpl::GetPartitionId() {
+  return GetContentClient()->browser()->
+    GetStoragePartitionIdForSite(GetBrowserContext(),
+      GetSiteInstance()->GetSiteURL());
+}
+
 void WebContentsImpl::GenerateMHTML(
     const MHTMLGenerationParams& params,
     const base::Callback<void(int64_t)>& callback) {

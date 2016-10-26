@@ -178,6 +178,9 @@ namespace downloads {
     // console.log(new Date(item.estimatedEndTime))})})</code>
     DOMString? estimatedEndTime;
 
+    // PartitionId if available from webview
+    DOMString? partitionId;
+
     // Indicates whether the download is progressing, interrupted, or complete.
     State state;
 
