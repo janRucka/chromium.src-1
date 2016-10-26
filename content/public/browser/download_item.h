@@ -190,6 +190,8 @@ class CONTENT_EXPORT DownloadItem : public base::SupportsUserData {
   virtual std::string GetMimeType() const = 0;
   virtual std::string GetOriginalMimeType() const = 0;
   virtual std::string GetRemoteAddress() const = 0;
+  virtual std::string GetPartitionId() const = 0;
+  virtual void SetPartitionId(std::string partitionId) = 0;
   virtual bool HasUserGesture() const = 0;
   virtual ui::PageTransition GetTransitionType() const = 0;
   virtual const std::string& GetLastModifiedTime() const = 0;

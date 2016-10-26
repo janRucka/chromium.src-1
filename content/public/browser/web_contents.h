@@ -531,6 +531,9 @@ class WebContents : public PageNavigator,
   // Set whether certificates are handled automatically or via user interaction
   virtual void SetAutomaticCertHandling(bool automaticCertHandling) = 0;
 
+  // Get Partition Id
+  virtual std::string GetPartitionId() = 0;
+
   // Check whether we can do the saving page operation this page given its MIME
   // type.
   virtual bool IsSavable() = 0;

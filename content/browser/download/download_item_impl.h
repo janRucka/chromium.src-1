@@ -122,6 +122,8 @@ class CONTENT_EXPORT DownloadItemImpl
   std::string GetMimeType() const override;
   std::string GetOriginalMimeType() const override;
   std::string GetRemoteAddress() const override;
+  std::string GetPartitionId() const override { return partitionId_; };
+  void SetPartitionId(std::string partitionId) override { partitionId_ = partitionId; };
   bool HasUserGesture() const override;
   ui::PageTransition GetTransitionType() const override;
   const std::string& GetLastModifiedTime() const override;
@@ -556,6 +558,8 @@ class CONTENT_EXPORT DownloadItemImpl
   // the download isn't done yet or because the hash isn't needed
   // (ChromeDownloadManagerDelegate::GenerateFileHash() returned false).
   std::string hash_;
+
+  std::string partitionId_;
 
   // A blob containing the state of the hash algorithm.  Only valid while the
   // download is in progress.

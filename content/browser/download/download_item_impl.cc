@@ -183,6 +183,7 @@ DownloadItemImpl::DownloadItemImpl(DownloadItemImplDelegate* delegate,
       is_temporary_(!info.save_info->file_path.empty()),
       bound_net_log_(bound_net_log),
       weak_ptr_factory_(this) {
+  SetPartitionId(info.partition_id);
   delegate_->Attach();
   Init(true /* actively downloading */, SRC_ACTIVE_DOWNLOAD);
 
