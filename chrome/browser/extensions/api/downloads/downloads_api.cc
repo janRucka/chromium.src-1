@@ -159,6 +159,7 @@ const char kFilenameRegexKey[] = "filenameRegex";
 const char kIdKey[] = "id";
 const char kIncognitoKey[] = "incognito";
 const char kMimeKey[] = "mime";
+const char kPartitionId[] = "partitionId";
 const char kPausedKey[] = "paused";
 const char kQueryKey[] = "query";
 const char kReferrerUrlKey[] = "referrer";
@@ -285,6 +286,8 @@ std::unique_ptr<base::DictionaryValue> DownloadItemToJSON(
   }
   if (!download_item->GetEndTime().is_null())
     json->SetString(kEndTimeKey, TimeToISO8601(download_item->GetEndTime()));
+
+  json->SetString(kPartitionId, download_item->GetPartitionId());
   base::TimeDelta time_remaining;
   if (download_item->TimeRemaining(&time_remaining)) {
     base::Time now = base::Time::Now();
