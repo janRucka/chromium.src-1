@@ -540,9 +540,6 @@ class CONTENT_EXPORT WebContentsDelegate {
   // Called when CertificateError in sub-frame occurs
   virtual void OnSubFrameCertificateError(base::ListValue* certificate) {}
 
-  // Returns the instance ID of this GuestViewBase.
-  virtual int guest_instance_id() const { return 0; }
-
  protected:
   virtual ~WebContentsDelegate();
 
