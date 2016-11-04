@@ -122,8 +122,8 @@ class CONTENT_EXPORT DownloadItemImpl
   std::string GetMimeType() const override;
   std::string GetOriginalMimeType() const override;
   std::string GetRemoteAddress() const override;
-  std::string GetPartitionId() const override { return partitionId_; };
-  void SetPartitionId(std::string partitionId) override { partitionId_ = partitionId; };
+  std::string GetPartitionId() const override;
+  void SetPartitionId(std::string partitionId) override;
   bool HasUserGesture() const override;
   ui::PageTransition GetTransitionType() const override;
   const std::string& GetLastModifiedTime() const override;

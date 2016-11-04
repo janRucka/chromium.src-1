@@ -1204,12 +1204,16 @@ void WebContentsViewAura::OnMouseEvent(ui::MouseEvent* event) {
   if (type == ui::ET_MOUSE_PRESSED)
       web_contents_->GetDelegate()->ActivateContents(web_contents_);
 
-  if (event->native_event().message == 523) { // WM_XBUTTONDOWN
-    if (event->native_event().wParam == 65568) // backward
-      nw::OnMouseButtonFwdBwd(false);
-    else if (event->native_event().wParam == 131136) // forward
-      nw::OnMouseButtonFwdBwd(true);
-  }
+  #if defined(OS_WIN)
+
+    if (event->native_event().message == 523) { // WM_XBUTTONDOWN
+      if (event->native_event().wParam == 65568) // backward
+        nw::OnMouseButtonFwdBwd(false);
+      else if (event->native_event().wParam == 131136) // forward
+        nw::OnMouseButtonFwdBwd(true);
+    }
+
+  #endif
 
   web_contents_->GetDelegate()->ContentsMouseEvent(
       web_contents_, gfx::Screen::GetScreen()->GetCursorScreenPoint(),
