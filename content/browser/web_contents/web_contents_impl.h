@@ -347,6 +347,7 @@ class CONTENT_EXPORT WebContentsImpl
   bool ShowingInterstitialPage() const override;
   InterstitialPage* GetInterstitialPage() const override;
   void OnCertificateError(std::unique_ptr<base::ListValue> certificate) const override;
+  void OnSubFrameCertificateError(std::unique_ptr<base::ListValue> certificate) const override;
   void SetCertificateErrorCallback(base::Callback<void(WebContents*, bool)> callback) override;
   base::Callback<void(WebContents*, bool)> GetCertificateErrorCallback() const override;
   bool GetAutomaticCertHandling() const override;

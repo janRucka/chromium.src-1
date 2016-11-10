@@ -73,6 +73,8 @@ class EventMap {
          events::WEB_VIEW_INTERNAL_ON_RESPONSE_STARTED},
         {webview::kEventResponsive, events::WEB_VIEW_INTERNAL_ON_RESPONSIVE},
         {webview::kEventSizeChanged, events::WEB_VIEW_INTERNAL_ON_SIZE_CHANGED},
+        {webview::kEventSubFrameCertificateError,
+         events::WEB_VIEW_INTERNAL_ON_SUBFRAME_CERTIFICATE_ERROR},
         {webview::kEventUnresponsive,
          events::WEB_VIEW_INTERNAL_ON_UNRESPONSIVE},
         {webview::kEventZoomChange, events::WEB_VIEW_INTERNAL_ON_ZOOM_CHANGE},

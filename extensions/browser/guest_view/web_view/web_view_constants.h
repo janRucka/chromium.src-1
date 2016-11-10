@@ -54,6 +54,7 @@ extern const char kEventResponseStarted[];
 extern const char kEventResponsive[];
 extern const char kEventSizeChanged[];
 extern const char kEventSSLChange[];
+extern const char kEventSubFrameCertificateError[];
 extern const char kEventUnresponsive[];
 extern const char kEventZoomChange[];
 

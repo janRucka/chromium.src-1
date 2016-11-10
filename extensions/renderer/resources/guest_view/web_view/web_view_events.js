@@ -147,6 +147,10 @@ WebViewEvents.EVENTS = {
       evt: CreateEvent('webViewInternal.onSSLChange'),
       fields: ['certificate']
   },
+  'subframecertificateerror': {
+    evt: CreateEvent('webViewInternal.onSubFrameCertificateError'),
+    fields: ['certificate']
+  },
   'unresponsive': {
     evt: CreateEvent('webViewInternal.onUnresponsive'),
     fields: ['processId']

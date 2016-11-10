@@ -85,13 +85,16 @@ static base::ListValue *ListValue_FromStringArray(const std::vector<std::string>
 void SSLPolicy::OnCertificateError(std::unique_ptr<SSLErrorHandler> handler)
 {
   WebContents* webContents = handler->web_contents();
+  bool isMainFrame = handler->resource_type() == content::RESOURCE_TYPE_MAIN_FRAME;
 
-  // remove potential pending instances
-  for (SSLErrorHandler* handler : SSLErrorHandler::GetInstances()) {
-    WebContents* tab = handler->web_contents();;
-    if (tab == webContents) {
-      SSLErrorHandler::EraseInstance(handler);
-      break;
+  if (isMainFrame) {
+    // remove potential pending instances
+    for (SSLErrorHandler* handler : SSLErrorHandler::GetInstances()) {
+      WebContents* tab = handler->web_contents();;
+      if (tab == webContents) {
+        SSLErrorHandler::EraseInstance(handler);
+        break;
+      }
     }
   }
 
@@ -115,16 +118,20 @@ void SSLPolicy::OnCertificateError(std::unique_ptr<SSLErrorHandler> handler)
   dict->Set("subject.organization_names", ListValue_FromStringArray(handler->ssl_info().cert->subject().organization_names));
   dict->Set("subject.organization_unit_names", ListValue_FromStringArray(handler->ssl_info().cert->subject().organization_unit_names));
   dict->SetString("fingerprint", base::HexEncode(handler->ssl_info().cert->CalculateFingerprint256(handler->ssl_info().cert->os_cert_handle()).data, sizeof(net::SHA1HashValue)));
-  handler.release();
 
   std::unique_ptr<base::ListValue> certificateInfo(new base::ListValue());
   certificateInfo->Append(dict);
 
-  webContents->OnCertificateError(std::move(certificateInfo));
-
-  webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLPolicy::*)
-    (WebContents*, bool)>(&SSLPolicy::OnAllowCertificate),
-    base::Unretained(this)));
+  if (isMainFrame) {
+    handler.release();
+    webContents->OnCertificateError(std::move(certificateInfo));
+    webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLPolicy::*)
+      (WebContents*, bool)>(&SSLPolicy::OnAllowCertificate),
+      base::Unretained(this)));
+  } else {
+    handler->DenyRequest();
+    webContents->OnSubFrameCertificateError(std::move(certificateInfo));
+  }
 }
 
 void SSLPolicy::OnCertError(std::unique_ptr<SSLErrorHandler> handler) {
@@ -161,7 +168,8 @@ void SSLPolicy::OnCertError(std::unique_ptr<SSLErrorHandler> handler) {
       if (expired_previous_decision)
         options_mask |= EXPIRED_PREVIOUS_DECISION;
 
-      if (handler->web_contents()->GetAutomaticCertHandling())
+      if (handler->web_contents()->GetAutomaticCertHandling()
+        || handler->resource_type() != content::RESOURCE_TYPE_MAIN_FRAME)
         OnCertificateError(std::move(handler));
       else
         OnCertErrorInternal(std::move(handler), options_mask);

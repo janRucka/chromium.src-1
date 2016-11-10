@@ -48,6 +48,7 @@ const char kEventResponseStarted[] = "webViewInternal.onResponseStarted";
 const char kEventResponsive[] = "webViewInternal.onResponsive";
 const char kEventSizeChanged[] = "webViewInternal.onSizeChanged";
 const char kEventSSLChange[] = "webViewInternal.onSSLChange";
+const char kEventSubFrameCertificateError[] = "webViewInternal.onSubFrameCertificateError";
 const char kEventUnresponsive[] = "webViewInternal.onUnresponsive";
 const char kEventZoomChange[] = "webViewInternal.onZoomChange";
 
