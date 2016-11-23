@@ -468,6 +468,7 @@ class AppWindow : public content::WebContentsDelegate,
   bool PreHandleKeyboardEvent(content::WebContents* source,
                               const content::NativeWebKeyboardEvent& event,
                               bool* is_keyboard_shortcut) override;
+  void ActivateContents(content::WebContents* contents) override;
   void HandleKeyboardEvent(
       content::WebContents* source,
       const content::NativeWebKeyboardEvent& event) override;

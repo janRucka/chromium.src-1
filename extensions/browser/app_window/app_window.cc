@@ -545,6 +545,18 @@ bool AppWindow::PreHandleGestureEvent(WebContents* source,
   return AppWebContentsHelper::ShouldSuppressGestureEvent(event);
 }
 
+// Fix for issue https://github.com/nwjs/nw.js/issues/4992
+// Bounds of dialogs are calcuated based on the bounds of parent window.
+// However on Windows, when window is minized, the bounds returned from system
+// is empty.
+// Implementing `WebContentsDelegate::ActivateContents` in `AppWindow` to
+// activate the native window before showing dialog fixes the issue.
+void AppWindow::ActivateContents(content::WebContents* contents) {
+  // Only activate window for NW.js app to avoid side effects to Chrome Apps.
+  if (GetExtension()->is_nwjs_app())
+    native_app_window_->Activate();
+}
+
 std::unique_ptr<content::BluetoothChooser> AppWindow::RunBluetoothChooser(
     content::RenderFrameHost* frame,
     const content::BluetoothChooser::EventHandler& event_handler) {

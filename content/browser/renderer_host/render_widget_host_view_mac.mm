@@ -3,6 +3,7 @@
 // found in the LICENSE file.
 
 #include "content/browser/renderer_host/render_widget_host_view_mac.h"
+#include "content/public/common/content_switches.h"
 
 #import <objc/runtime.h>
 #include <OpenGL/gl.h>
@@ -745,6 +746,7 @@ void RenderWidgetHostViewMac::Hide() {
   [cocoa_view_ setHidden:YES];
 
   render_widget_host_->WasHidden();
+  if (!base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kDisableRAFThrottling))
   browser_compositor_->SetRenderWidgetHostIsHidden(true);
 }
 
@@ -764,6 +766,7 @@ void RenderWidgetHostViewMac::WasOccluded() {
   }
 
   render_widget_host_->WasHidden();
+  if (!base::CommandLine::ForCurrentProcess()->HasSwitch(switches::kDisableRAFThrottling))
   browser_compositor_->SetRenderWidgetHostIsHidden(true);
 }
 
