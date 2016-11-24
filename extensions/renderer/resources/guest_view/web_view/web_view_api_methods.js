@@ -28,6 +28,9 @@ var WEB_VIEW_API_METHODS = [
   // Add content scripts for the guest page.
   'addContentScripts',
 
+  // Allow Certificate
+  'allowCertificate',
+
   // Navigates to the previous history entry.
   'back',
 
@@ -43,6 +46,18 @@ var WEB_VIEW_API_METHODS = [
   // Clears browsing data for the WebView partition.
   'clearData',
 
+  // Retrieves information about a single cookie.
+  'cookiesGet',
+
+  // Retrieves all cookies from a single cookie store that match given webview.
+  'cookiesGetAll',
+
+  // Sets a cookie with the given cookie data; may overwrite equivalent cookies if they exist.
+  'cookiesSet',
+
+  // Deletes a cookie by name.
+  'cookiesRemove',
+
   // Injects JavaScript code into the guest page.
   'executeScript',
 
@@ -51,6 +66,12 @@ var WEB_VIEW_API_METHODS = [
 
   // Navigates to the subsequent history entry.
   'forward',
+
+  // Get current history index
+  'getCurrentHistoryIndex',
+
+  // Get array with history of URLs titles and favicons
+  'getPagesHistory',
 
   // Returns Chrome's internal process ID for the guest web page's current
   // process.
@@ -149,6 +170,14 @@ WebViewImpl.prototype.getGuestId = function() {
 
 WebViewImpl.prototype.getUserAgent = function() {
   return this.userAgentOverride || navigator.userAgent;
+};
+
+WebViewImpl.prototype.getCurrentHistoryIndex = function () {
+    return this.currentEntryIndex;
+};
+
+WebViewImpl.prototype.getPagesHistory = function() {
+    return this.pagesHistory;
 };
 
 WebViewImpl.prototype.insertCSS = function(var_args) {
