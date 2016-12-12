@@ -6,7 +6,7 @@ vars = {
   'boringssl_revision':
     '0d81373f9169637ff935449227be924c08bf1ec5',
   'buildspec_platforms':
-    'win64,win,precise64,mac64,',
+    'all',
   'buildtools_revision':
     '39b1db2ab4aa4b2ccaa263c29bdf63e7c1ee28aa',
   'catapult_revision':
@@ -177,7 +177,7 @@ deps = {
   'src/tools/swarming_client':
     (Var("chromium_git")) + '/external/swarming.client.git@380e32662312eb107f06fcba6409b0409f8fef72',
   #'src/v8':
-  #  (Var("chromium_git")) + '/v8/v8.git@9637ae32349359436c3b48f9a13a37de4d673cb1'
+  #  (Var("chromium_git")) + '/v8/v8.git@1ae9314d1ba4a31d1a230a6f17cc26e1ddf80e97'
   #  (Var("nwjs_git")) + '/v8.git@origin/nw16',
   #'src/content/nw':
   #  (Var("nwjs_git")) + '/nw.js.git@origin/nw16',
