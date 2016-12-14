@@ -114,7 +114,7 @@ base::string16 BrowserDistribution::GetActiveSetupGuid() {
 }
 
 base::string16 BrowserDistribution::GetBaseAppName() {
-  return L"nwjs";
+  return L"Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetDisplayName() {
@@ -145,7 +145,7 @@ base::string16 BrowserDistribution::GetStartMenuShortcutSubfolder(
 }
 
 base::string16 BrowserDistribution::GetBaseAppId() {
-  return L"nwjs";
+  return L"Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetBrowserProgIdPrefix() {
@@ -161,11 +161,11 @@ base::string16 BrowserDistribution::GetBrowserProgIdDesc() {
 
 
 base::string16 BrowserDistribution::GetInstallSubDir() {
-  return L"nwjs";
+  return L"Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetPublisherName() {
-  return L"nwjs";
+  return L"Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetAppDescription() {
@@ -179,7 +179,7 @@ base::string16 BrowserDistribution::GetLongAppDescription() {
 }
 
 std::string BrowserDistribution::GetSafeBrowsingName() {
-  return "nwjs";
+  return "Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetDistributionData(HKEY root_key) {
