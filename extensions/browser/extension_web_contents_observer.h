@@ -65,6 +65,8 @@ class ExtensionWebContentsObserver
       content::RenderFrameHost* render_frame_host,
       bool verify_url) const;
 
+  bool Send(IPC::Message* message) override;
+
  protected:
   explicit ExtensionWebContentsObserver(content::WebContents* web_contents);
   ~ExtensionWebContentsObserver() override;

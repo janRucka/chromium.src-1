@@ -4,6 +4,9 @@
 
 #include "extensions/browser/extension_function.h"
 
+#include "content/public/browser/interstitial_page.h"
+#include "content/browser/frame_host/render_frame_host_delegate.h"
+#include "content/browser/frame_host/render_frame_host_impl.h"
 #include <utility>
 
 #include "base/logging.h"
@@ -527,8 +530,12 @@ content::WebContents* UIThreadExtensionFunction::GetAssociatedWebContents() {
 }
 
 content::WebContents* UIThreadExtensionFunction::GetSenderWebContents() {
-  return render_frame_host_ ?
+  content::WebContents* ret = render_frame_host_ ?
       content::WebContents::FromRenderFrameHost(render_frame_host_) : nullptr;
+  if (ret)
+    return ret;
+  content::InterstitialPage* page = static_cast<content::RenderFrameHostImpl*>(render_frame_host_)->delegate()->GetAsInterstitialPage();
+  return page->GetWebContents();
 }
 
 void UIThreadExtensionFunction::OnResponded() {

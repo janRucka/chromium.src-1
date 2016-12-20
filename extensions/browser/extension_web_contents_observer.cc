@@ -191,12 +191,15 @@ bool ExtensionWebContentsObserver::OnMessageReceived(
     const IPC::Message& message,
     content::RenderFrameHost* render_frame_host) {
   bool handled = true;
-  tmp_render_frame_host_ = render_frame_host;
+  tmp_render_frame_host_ = nullptr;
   IPC_BEGIN_MESSAGE_MAP_WITH_PARAM(
       ExtensionWebContentsObserver, message, render_frame_host)
     IPC_MESSAGE_HANDLER(ExtensionHostMsg_Request, OnRequest)
     IPC_MESSAGE_UNHANDLED(handled = false)
   IPC_END_MESSAGE_MAP()
+    tmp_render_frame_host_ = render_frame_host; //must put here to
+                                                //mark dealing with
+                                                //sync msg
   IPC_BEGIN_MESSAGE_MAP(
       ExtensionWebContentsObserver, message)
     IPC_MESSAGE_HANDLER(ExtensionHostMsg_RequestSync, OnRequestSync)
@@ -308,6 +311,22 @@ void ExtensionWebContentsObserver::OnRequestSync(
   content::RenderFrameHost* render_frame_host = tmp_render_frame_host_;
   dispatcher_.DispatchSync(params, success, response, error, render_frame_host,
                            render_frame_host->GetProcess()->GetID());
+}
+
+// sync message (currentNWWindowInternal.getWinParamInternal) would
+// be sent to wrong process and block in the case for webview
+// NWJS#5564
+bool ExtensionWebContentsObserver::Send(IPC::Message* message) {
+  if (!web_contents()) {
+    delete message;
+    return false;
+  }
+
+  if (tmp_render_frame_host_ && web_contents()->IsSubframe()) {
+    return tmp_render_frame_host_->Send(message);
+  }
+  
+  return web_contents()->Send(message);
 }
 
 void ExtensionWebContentsObserver::InitializeFrameHelper(

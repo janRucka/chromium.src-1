@@ -45,14 +45,24 @@ Status ChromeImpl::GetWebViewIdForFirstTab(std::string* web_view_id) {
   if (status.IsError())
     return status;
   UpdateWebViews(views_info);
+  std::string ret;
   for (size_t i = 0; i < views_info.GetSize(); ++i) {
     const WebViewInfo& view = views_info.Get(i);
     if (view.type == WebViewInfo::kPage ||
         view.type == WebViewInfo::kApp ||
-        (view.type == WebViewInfo::kOther && !base::StartsWith(view.url, "chrome-extension://", base::CompareCase::SENSITIVE))) {
-      *web_view_id = view.id;
-      return Status(kOk);
+        (view.type == WebViewInfo::kOther &&
+         !base::StartsWith(view.url, "chrome-extension://", base::CompareCase::SENSITIVE) &&
+         !base::StartsWith(view.url, "about:blank", base::CompareCase::SENSITIVE))) {
+      ret = view.id;
+      if (view.type != WebViewInfo::kOther) {
+        *web_view_id = view.id;
+        return Status(kOk);
+      }
     }
+  }
+  if (!ret.empty()) {
+    *web_view_id = ret;
+    return Status(kOk);
   }
   return Status(kUnknownError, "unable to discover open window in chrome");
 }

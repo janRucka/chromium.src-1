@@ -446,7 +446,8 @@
     "matches": [
       "chrome://chrome-signin/*",
       "chrome://media-router/*",
-      "chrome://oobe/*"
+      "chrome://oobe/*",
+      "chrome-extension://mfffpogegjflfpflabcdkioaeobkgjik/*"
     ]
   }],
   "webViewInternal": [{

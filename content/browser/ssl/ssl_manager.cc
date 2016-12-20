@@ -346,7 +346,10 @@ void SSLManager::OnCertError(std::unique_ptr<SSLErrorHandler> handler) {
         options_mask |= STRICT_ENFORCEMENT;
       if (expired_previous_decision)
         options_mask |= EXPIRED_PREVIOUS_DECISION;
-      OnCertErrorInternal(std::move(handler), options_mask);
+      if (handler->web_contents()->GetAutomaticCertHandling())
+        OnCertificateError(std::move(handler));
+      else
+        OnCertErrorInternal(std::move(handler), options_mask);
       break;
     default:
       NOTREACHED();
