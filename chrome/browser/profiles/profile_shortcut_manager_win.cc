@@ -79,7 +79,7 @@ const int kProfileAvatarBadgeSize = kShortcutIconSize / 2;
 // Incrementing this number will cause profile icons to be regenerated on
 // profile startup (it should be incremented whenever the product/avatar icons
 // change, etc).
-const int kCurrentProfileIconVersion = 5;
+const int kCurrentProfileIconVersion = 4;
 
 // 2x sized profile avatar icons. Mirrors |kDefaultAvatarIconResources| in
 // profile_info_cache.cc.
