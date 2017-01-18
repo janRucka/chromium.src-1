@@ -37,6 +37,8 @@
 #include "content/nw/src/common/node_hooks.h"
 #undef NW_HOOK_MAP
 
+#include "base/command_line.h"
+
 #include "core/dom/Document.h"
 #include "core/dom/ExecutionContextTask.h"
 #include "core/dom/SecurityContext.h"
@@ -123,8 +125,9 @@ void InProcessWorkerMessagingProxy::startWorkerGlobalScope(
 
   Document* document = toDocument(getExecutionContext());
   SecurityOrigin* starterOrigin = document->getSecurityOrigin();
+  const base::CommandLine& command_line = *base::CommandLine::ForCurrentProcess();
 
-  bool isNodeJS = document->frame() && document->frame()->isNodeJS();
+  bool isNodeJS = document->frame() && document->frame()->isNodeJS() && command_line.HasSwitch("enable-node-worker");
   std::string main_script;
   if (g_web_worker_start_thread_fn) {
     (*g_web_worker_start_thread_fn)(document->frame(), (void*)scriptURL.path().utf8().data(), &main_script, &isNodeJS);

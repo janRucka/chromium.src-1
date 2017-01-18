@@ -112,4 +112,5 @@ const char kEnableCrashReporterForTesting[] =
 #endif
 
 const char kNWJS[] = "nwjs";
+const char kNWAppPath[] = "nwjs-path";
 }  // namespace switches

@@ -11,6 +11,7 @@
 
 #include "content/nw/src/common/shell_switches.h"
 #include "content/nw/src/nw_content.h"
+#include "content/nw/src/nw_base.h"
 #include "chrome/browser/profiles/profile_manager.h"
 
 #include "base/base_switches.h"
@@ -1565,6 +1566,7 @@ void ChromeContentBrowserClient::AppendExtraCommandLineSwitches(
 
   if (process_type == switches::kRendererProcess) {
     command_line->AppendSwitch(switches::kNWJS);
+    command_line->AppendSwitchPath(switches::kNWAppPath, nw::package()->path());
 
     content::RenderProcessHost* process =
         content::RenderProcessHost::FromID(child_process_id);

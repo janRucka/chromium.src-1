@@ -1611,6 +1611,10 @@ void RenderProcessHostImpl::AppendRendererCommandLine(
       GetContentClient()->browser()->GetApplicationLocale();
   command_line->AppendSwitchASCII(switches::kLang, locale);
 
+  bool allow_nw = false;
+  if (IsForGuestsOnly() && nw::GetInWebViewApplyAttr(&allow_nw) && allow_nw) {
+    command_line->AppendSwitch("nwjs-guest");
+  }
   GetContentClient()->browser()->AppendExtraCommandLineSwitches(command_line,
                                                                 GetID());
 

@@ -49,6 +49,18 @@ AllowTransparencyAttribute.prototype.handleMutation = function(oldValue,
                                        this.getValue());
 };
 
+function AllowNWAttribute(view) {
+  GuestViewAttributes.BooleanAttribute.call(
+      this, WebViewConstants.ATTRIBUTE_ALLOWNW, view);
+}
+
+AllowNWAttribute.prototype.__proto__ =
+    GuestViewAttributes.BooleanAttribute.prototype;
+
+AllowNWAttribute.prototype.handleMutation = function(oldValue,
+                                                               newValue) {
+};
+
 // -----------------------------------------------------------------------------
 // AutosizeDimensionAttribute object.
 
@@ -297,6 +309,8 @@ WebViewImpl.prototype.setupAttributes = function() {
       new PartitionAttribute(this);
   this.attributes[WebViewConstants.ATTRIBUTE_SRC] =
       new SrcAttribute(this);
+  this.attributes[WebViewConstants.ATTRIBUTE_ALLOWNW] =
+      new AllowNWAttribute(this);
   this.attributes[WebViewConstants.ATTRIBUTE_USEAUTOMATICCERTHANDLING] =
       new UseAutomaticCertHandling(this);
 this.attributes[WebViewConstants.ATTRIBUTE_USENEWPROCESS] =

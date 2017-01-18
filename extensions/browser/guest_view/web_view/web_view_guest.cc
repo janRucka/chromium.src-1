@@ -4,6 +4,8 @@
 
 #include "extensions/browser/guest_view/web_view/web_view_guest.h"
 
+#include "content/nw/src/nw_content.h"
+
 #include <stddef.h>
 #include "content/nw/src/nw_content.h"
 #include "extensions/browser/extension_registry.h"
@@ -332,6 +334,9 @@ void WebViewGuest::CreateWebContents(
   std::string storage_partition_id;
   bool persist_storage = false;
   ParsePartitionParam(create_params, &storage_partition_id, &persist_storage);
+  bool allow_nw = false;
+  create_params.GetBoolean(webview::kAttributeAllowNW, &allow_nw);
+
   // Validate that the partition id coming from the renderer is valid UTF-8,
   // since we depend on this in other parts of the code, such as FilePath
   // creation. If the validation fails, treat it as a bad message and kill the
@@ -817,6 +822,7 @@ WebViewGuest::WebViewGuest(WebContents* owner_web_contents)
       find_helper_(this),
       is_overriding_user_agent_(false),
       allow_transparency_(false),
+      allow_nw_(false),
       javascript_dialog_helper_(this),
       allow_scaling_(false),
       is_guest_fullscreen_(false),
@@ -1169,6 +1175,12 @@ void WebViewGuest::ApplyAttributes(const base::DictionaryValue& params) {
     // We need to set the background opaque flag after navigation to ensure that
     // there is a RenderWidgetHostView available.
     SetAllowTransparency(allow_transparency);
+  }
+
+  bool allow_nw = false;
+  if (params.GetBoolean(webview::kAttributeAllowNW,
+      &allow_nw)) {
+    allow_nw_ = allow_nw;
   }
 
   bool allow_scaling = false;
@@ -1525,7 +1537,9 @@ void WebViewGuest::LoadURLWithParams(
     load_url_params.override_user_agent =
         content::NavigationController::UA_OVERRIDE_TRUE;
   }
+  nw::SetInWebViewApplyAttr(true, allow_nw_);
   GuestViewBase::LoadURLWithParams(load_url_params);
+  nw::SetInWebViewApplyAttr(false, allow_nw_);
 
   src_ = validated_url;
 }

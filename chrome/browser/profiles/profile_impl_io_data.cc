@@ -508,6 +508,12 @@ void ProfileImplIOData::InitializeInternal(
       lazy_params_->special_storage_policy.get(),
       profile_params->cookie_monster_delegate.get());
   cookie_config.crypto_delegate = cookie_config::GetCookieCryptoDelegate();
+
+  const base::CommandLine& command_line =
+      *base::CommandLine::ForCurrentProcess();
+  if (command_line.HasSwitch("disable-cookie-encryption")) {
+    cookie_config::SetEnableCookieCrypto(false);
+  }
   main_cookie_store_ = content::CreateCookieStore(cookie_config);
 
   main_context->set_cookie_store(main_cookie_store_.get());

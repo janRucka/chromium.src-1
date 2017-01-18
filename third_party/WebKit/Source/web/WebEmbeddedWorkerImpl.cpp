@@ -41,6 +41,8 @@
 #include "content/nw/src/common/node_hooks.h"
 #undef NW_HOOK_MAP
 
+#include "base/command_line.h"
+
 #include "bindings/core/v8/SourceLocation.h"
 #include "core/dom/Document.h"
 #include "core/dom/ExecutionContextTask.h"
@@ -425,7 +427,8 @@ void WebEmbeddedWorkerImpl::startWorkerThread() {
   DCHECK(!m_askedToTerminate);
 
   Document* document = m_mainFrame->frame()->document();
-  bool isNodeJS = document->frame() && document->frame()->isNodeJS();
+  const base::CommandLine& command_line = *base::CommandLine::ForCurrentProcess();
+  bool isNodeJS = document->frame() && document->frame()->isNodeJS() && command_line.HasSwitch("enable-node-worker");
 
   // FIXME: this document's origin is pristine and without any extra privileges.
   // (crbug.com/254993)

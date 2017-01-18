@@ -31,6 +31,8 @@
 
 #include "core/workers/SharedWorker.h"
 
+#include "base/command_line.h"
+
 #include "bindings/core/v8/ExceptionState.h"
 #include "core/dom/ExecutionContext.h"
 #include "core/dom/MessageChannel.h"
@@ -84,7 +86,8 @@ SharedWorker* SharedWorker::create(ExecutionContext* context,
   if (scriptURL.isEmpty())
     return nullptr;
 
-  bool isNodeJS = document->frame()->isNodeJS();
+  const base::CommandLine& command_line = *base::CommandLine::ForCurrentProcess();
+  bool isNodeJS = document->frame()->isNodeJS() && command_line.HasSwitch("enable-node-worker");
   if (document->frame()->loader().client()->sharedWorkerRepositoryClient())
     document->frame()
         ->loader()
