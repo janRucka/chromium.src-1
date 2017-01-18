@@ -304,6 +304,14 @@ void WebViewPermissionHelper::FileSystemAccessedSync(int render_process_id,
       render_process_id, render_frame_id, url, blocked_by_policy, reply_msg);
 }
 
+void WebViewPermissionHelper::RequestPermission(const PermissionResponseCallback& callback) {
+  base::MessageLoop::current()->PostTask(
+    FROM_HERE,
+    base::Bind(&PermissionResponseCallback::Run,
+      base::Owned(new PermissionResponseCallback(callback)),
+      false, std::string()));
+}
+
 int WebViewPermissionHelper::RequestPermission(
     WebViewPermissionType permission_type,
     const base::DictionaryValue& request_info,

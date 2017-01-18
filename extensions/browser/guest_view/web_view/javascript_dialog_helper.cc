@@ -61,6 +61,15 @@ void JavaScriptDialogHelper::RunJavaScriptDialog(
   request_info.Set(guest_view::kUrl, new base::StringValue(origin_url.spec()));
   WebViewPermissionHelper* web_view_permission_helper =
       WebViewPermissionHelper::FromWebContents(web_contents);
+
+  if (!web_view_permission_helper) {
+    WebViewPermissionHelper::RequestPermission(
+      base::Bind(&JavaScriptDialogHelper::OnPermissionResponse,
+      base::Unretained(this),
+      callback));
+    return;
+  }
+
   web_view_permission_helper->RequestPermission(
       WEB_VIEW_PERMISSION_TYPE_JAVASCRIPT_DIALOG,
       request_info,
