@@ -735,7 +735,7 @@ class CONTENT_EXPORT WebContentsImpl
   }
 
   // PartitionId if available from webview
-  std::string GetPartitionId();
+  std::string GetPartitionId() override;
 
  private:
   friend class WebContentsObserver;

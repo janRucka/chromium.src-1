@@ -543,6 +543,14 @@ std::string DownloadItemImpl::GetRemoteAddress() const {
   return remote_address_;
 }
 
+std::string DownloadItemImpl::GetPartitionId() const {
+  return partitionId_;
+};
+
+void DownloadItemImpl::SetPartitionId(std::string partitionId) {
+  partitionId_ = partitionId;
+};
+
 bool DownloadItemImpl::HasUserGesture() const {
   return has_user_gesture_;
 };
