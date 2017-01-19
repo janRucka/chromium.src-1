@@ -50,8 +50,8 @@ class ContentVerifyJob : public base::RefCountedThreadSafe<ContentVerifyJob> {
 
     FAILURE_REASON_MAX
   };
-  typedef base::Callback<void(FailureReason, ContentVerifyJob*)> FailureCallback;
-  typedef base::Callback<void(ContentVerifyJob*)> ReadyCallback;
+  typedef base::Callback<void(FailureReason, scoped_refptr<ContentVerifyJob>)> FailureCallback;
+  typedef base::Callback<void(scoped_refptr<ContentVerifyJob>)> ReadyCallback;
   typedef base::Callback<void(void)> SuccessCallback;
 
   // The |failure_callback| will be called at most once if there was a failure.

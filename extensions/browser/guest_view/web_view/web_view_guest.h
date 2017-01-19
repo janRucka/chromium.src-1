@@ -348,6 +348,7 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
 
   // Stores whether the contents of the guest can be transparent.
   bool allow_transparency_;
+  bool allow_nw_;
 
   // Stores the src URL of the WebView.
   GURL src_;

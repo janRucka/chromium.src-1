@@ -40,6 +40,7 @@ extern const char kEnableCrashReporterForTesting[];
 #endif
 
 extern const char kNWJS[];
+extern const char kNWAppPath[];
 }  // namespace switches
 
 #endif  // BASE_BASE_SWITCHES_H_

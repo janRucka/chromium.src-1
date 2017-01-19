@@ -19,6 +19,7 @@ var WebViewConstants = {
   ATTRIBUTE_USEAUTOMATICCERTHANDLING: 'useautomaticcerthandling',
   ATTRIBUTE_USENEWPROCESS: 'usenewprocess',
   ATTRIBUTE_SRC: 'src',
+  ATTRIBUTE_ALLOWNW:  'allownw',
 
   // Error/warning messages.
   ERROR_MSG_ALREADY_NAVIGATED: '<webview>: ' +

@@ -103,7 +103,6 @@ var WEB_VIEW_API_METHODS = [
   'loadDataWithBaseUrl',
 
   'showDevTools',
-
   // Prints the contents of the webview.
   'print',
 

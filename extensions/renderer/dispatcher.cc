@@ -383,6 +383,8 @@ void Dispatcher::DidCreateScriptContext(
   // chrome.Event is part of the public API (although undocumented). Make it
   // lazily evalulate to Event from event_bindings.js. For extensions only
   // though, not all webpages!
+
+  bool run_nw_hook = false;
   if (context->extension()) {
     v8::Local<v8::Object> chrome = AsObjectOrEmpty(GetOrCreateChrome(context, false));
     if (!chrome.IsEmpty())
@@ -390,10 +392,17 @@ void Dispatcher::DidCreateScriptContext(
 
     if (context->extension()->GetType() == Manifest::TYPE_NWJS_APP &&
         context->context_type() == Feature::BLESSED_EXTENSION_CONTEXT) {
-
-      nw::ContextCreationHook(frame, context);
+      run_nw_hook = true;
     }
   }
+  if (!run_nw_hook) {
+    const base::CommandLine& command_line =
+      *base::CommandLine::ForCurrentProcess();
+    if (command_line.HasSwitch("nwjs-guest"))
+      run_nw_hook = true;
+  }
+  if (run_nw_hook)
+    nw::ContextCreationHook(frame, context);
 
   UpdateBindingsForContext(context);
 

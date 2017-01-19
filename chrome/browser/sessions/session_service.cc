@@ -6,6 +6,7 @@
 
 #include "content/nw/src/nw_content.h"
 #include "extensions/browser/extension_system.h"
+#include "extensions/browser/app_window/app_window_registry.h"
 #include "chrome/browser/extensions/extension_service.h"
 
 #include <stddef.h>
@@ -1118,6 +1119,10 @@ void SessionService::MaybeDeleteSessionOnlyData() {
       if (extensions::ProcessManager::Get(profile())->GetLazyKeepaliveCount(extension) > 0)
         return;
     }
+    //additional checking for NWJS#5355
+    extensions::AppWindowRegistry* registry = extensions::AppWindowRegistry::Factory::GetForBrowserContext(profile(), false);
+    if (registry && !registry->app_windows().empty())
+      return;
   }
   DeleteSessionOnlyData(profile());
 }

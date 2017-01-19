@@ -61,23 +61,23 @@ class ContentVerifier : public base::RefCountedThreadSafe<ContentVerifier>,
   void VerifyFailed(const std::string& extension_id,
                     const base::FilePath& relative_path,
                     ContentVerifyJob::FailureReason reason,
-                    ContentVerifyJob* verify_job);
+                    scoped_refptr<ContentVerifyJob> verify_job);
   void OnHashReady(const std::string& extension_id,
                    const base::FilePath& extension_root,
                    const base::FilePath& relative_path,
-                   ContentVerifyJob* verify_job);
+                   scoped_refptr<ContentVerifyJob> verify_job);
   void BytesRead(const base::FilePath& extension_root,
                  const base::FilePath& relative_path,
-                 ContentVerifyJob* job);
+                 scoped_refptr<ContentVerifyJob> job);
   void ReadFile(const base::FilePath& extension_root,
                 const base::FilePath& relative_path,
-                ContentVerifyJob* job);
+                scoped_refptr<ContentVerifyJob> job);
   void OpenFile(const base::FilePath& extension_root,
                 const base::FilePath& relative_path,
-                ContentVerifyJob* job);
+                scoped_refptr<ContentVerifyJob> job);
   void OnFileReady(const base::FilePath& extension_root,
                    const base::FilePath& relative_path,
-                   ContentVerifyJob* job);
+                   scoped_refptr<ContentVerifyJob> job);
 
   // ExtensionRegistryObserver interface
   void OnExtensionLoaded(content::BrowserContext* browser_context,

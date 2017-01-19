@@ -16,6 +16,7 @@ extern const char kAttributeAllowTransparency[];
 extern const char kAttributeAllowScaling[];
 extern const char kAttributeName[];
 extern const char kAttributeSrc[];
+extern const char kAttributeAllowNW[];
 extern const char kAttributeUseAutomaticCertHandling[];
 extern const char kAttributeUseNewProcess[];
 

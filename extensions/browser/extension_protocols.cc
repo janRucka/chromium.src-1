@@ -278,6 +278,11 @@ class URLRequestExtensionJob : public net::URLRequestFileJob {
 
 private:
   ~URLRequestExtensionJob() override {
+    if (verify_job_.get()) {
+      // there is a change that the job is cancelled before the verify
+      // job is complete
+      verify_job_->SetSuccessCallback(ContentVerifyJob::SuccessCallback());
+    }
     UMA_HISTOGRAM_COUNTS("ExtensionUrlRequest.TotalKbRead", bytes_read_ / 1024);
     UMA_HISTOGRAM_COUNTS("ExtensionUrlRequest.SeekPosition", seek_position_);
     if (request_timer_.get())

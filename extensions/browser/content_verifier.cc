@@ -124,7 +124,7 @@ ContentVerifyJob* ContentVerifier::CreateJobFor(
 void ContentVerifier::OnHashReady(const std::string& extension_id,
                                   const base::FilePath& extension_root,
                                   const base::FilePath& relative_path,
-                                  ContentVerifyJob* verify_job) {
+                                  scoped_refptr<ContentVerifyJob> verify_job) {
   content::BrowserThread::GetBlockingPool()->PostTaskAndReply(
       FROM_HERE,
       base::Bind(&ContentVerifier::OpenFile, this, extension_root, relative_path, verify_job),
@@ -133,13 +133,13 @@ void ContentVerifier::OnHashReady(const std::string& extension_id,
 
 void ContentVerifier::OpenFile(const base::FilePath& extension_root,
                                const base::FilePath& relative_path,
-                               ContentVerifyJob* job) {
+                               scoped_refptr<ContentVerifyJob> job) {
   job->file_.Initialize(extension_root.Append(relative_path), base::File::FLAG_OPEN | base::File::FLAG_READ);
 }
 
 void ContentVerifier::OnFileReady(const base::FilePath& extension_root,
                                   const base::FilePath& relative_path,
-                                  ContentVerifyJob* job) {
+                                  scoped_refptr<ContentVerifyJob> job) {
   if (!job->file_.IsValid())
     job->DoneReading();
 
@@ -150,7 +150,7 @@ void ContentVerifier::OnFileReady(const base::FilePath& extension_root,
 }
 void ContentVerifier::ReadFile(const base::FilePath& extension_root,
                                const base::FilePath& relative_path,
-                               ContentVerifyJob* job) {
+                               scoped_refptr<ContentVerifyJob> job) {
   job->len_ = job->file_.ReadAtCurrentPos(job->buf_, 32768);
   if (job->len_ <= 0)
     job->file_.Close();
@@ -158,7 +158,7 @@ void ContentVerifier::ReadFile(const base::FilePath& extension_root,
 
 void ContentVerifier::BytesRead(const base::FilePath& extension_root,
                                 const base::FilePath& relative_path,
-                                ContentVerifyJob* job) {
+                                scoped_refptr<ContentVerifyJob> job) {
   if (job->len_ <= 0) {
     job->DoneReading();
   } else {
@@ -173,7 +173,7 @@ void ContentVerifier::BytesRead(const base::FilePath& extension_root,
 void ContentVerifier::VerifyFailed(const std::string& extension_id,
                                    const base::FilePath& relative_path,
                                    ContentVerifyJob::FailureReason reason,
-                                   ContentVerifyJob* verify_job) {
+                                   scoped_refptr<ContentVerifyJob> verify_job) {
   if (!content::BrowserThread::CurrentlyOn(content::BrowserThread::UI)) {
     content::BrowserThread::PostTask(
         content::BrowserThread::UI,
