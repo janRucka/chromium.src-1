@@ -189,6 +189,31 @@ void DefaultWebClientWorker::StartSetAsDefault() {
       base::Bind(&DefaultWebClientWorker::SetAsDefault, this));
 }
 
+void DefaultWebClientWorker::StartRegistration() {
+  // Cancel the already running process if another start is requested.
+  if (set_as_default_in_progress_) {
+    if (set_as_default_initialized_) {
+      FinalizeSetAsDefault();
+      set_as_default_initialized_ = false;
+    }
+
+    ReportAttemptResult(AttemptResult::RETRY);
+  }
+
+  set_as_default_in_progress_ = true;
+  if (observer_)
+    observer_->SetDefaultWebClientUIState(STATE_PROCESSING);
+
+  set_as_default_initialized_ = InitializeSetAsDefault();
+
+  // Remember the start time.
+  start_time_ = base::TimeTicks::Now();
+
+  BrowserThread::PostTask(
+    BrowserThread::FILE, FROM_HERE,
+    base::Bind(&DefaultWebClientWorker::Registration, this));
+}
+
 void DefaultWebClientWorker::ObserverDestroyed() {
   // Our associated view has gone away, so we shouldn't call back to it if
   // our worker thread returns after the view is dead.
@@ -399,6 +424,14 @@ void DefaultBrowserWorker::SetAsDefault() {
                  result));
 }
 
+void DefaultBrowserWorker::Registration() {
+  AttemptResult result = Register() ? AttemptResult::SUCCESS : AttemptResult::FAILURE;
+  BrowserThread::PostTask(
+    BrowserThread::UI, FROM_HERE,
+    base::Bind(&DefaultBrowserWorker::OnSetAsDefaultAttemptComplete,
+      this, result));
+}
+
 const char* DefaultBrowserWorker::GetHistogramPrefix() {
   return "DefaultBrowser";
 }
@@ -450,6 +483,14 @@ void DefaultProtocolClientWorker::SetAsDefault() {
       BrowserThread::UI, FROM_HERE,
       base::Bind(&DefaultProtocolClientWorker::OnSetAsDefaultAttemptComplete,
                  this, result));
+}
+
+void DefaultProtocolClientWorker::Registration() {
+  AttemptResult result = Register() ? AttemptResult::SUCCESS : AttemptResult::FAILURE;
+  BrowserThread::PostTask(
+    BrowserThread::UI, FROM_HERE,
+    base::Bind(&DefaultProtocolClientWorker::OnSetAsDefaultAttemptComplete,
+      this, result));
 }
 
 const char* DefaultProtocolClientWorker::GetHistogramPrefix() {

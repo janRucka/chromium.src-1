@@ -364,6 +364,19 @@ bool SetAsDefaultProtocolClient(const std::string& protocol) {
   return true;
 }
 
+bool Register()
+{
+  base::FilePath chrome_exe;
+  if (!PathService::Get(base::FILE_EXE, &chrome_exe)) {
+    LOG(ERROR) << "Error getting app exe path";
+    return false;
+  }
+
+  BrowserDistribution* dist = BrowserDistribution::GetDistribution();
+
+  return ShellUtil::RegisterChromeBrowser(dist, chrome_exe, base::string16(), true);
+}
+
 bool SetAsDefaultProtocolClientInteractive(const std::string& protocol) {
   base::FilePath chrome_exe;
   if (!PathService::Get(base::FILE_EXE, &chrome_exe)) {
