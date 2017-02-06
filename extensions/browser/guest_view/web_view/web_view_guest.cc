@@ -1194,9 +1194,11 @@ void WebViewGuest::ApplyAttributes(const base::DictionaryValue& params) {
 
   // Only read the src attribute if this is not a New Window API flow.
   if (!is_pending_new_window) {
-    std::string src;
-    if (params.GetString(webview::kAttributeSrc, &src))
-      NavigateGuest(src, true /* force_navigation */);
+    std::string src, partition;
+    // if partition is dirty fix so we don't reload webview after display none -> display flex
+    if (params.GetString(webview::kAttributeSrc, &src)
+      && params.GetString(webview::kStoragePartitionId, &partition))
+        NavigateGuest(src, true /* force_navigation */);
   }
 }
 
