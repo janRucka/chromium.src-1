@@ -66,6 +66,10 @@ WebViewEvents.EVENTS = {
     handler: 'handleFullscreenExitEvent',
     internal: true
   },
+  'faviconchange': {
+    evt: CreateEvent('webViewInternal.onFaviconChange'),
+    fields: ['faviconUrl']
+  },
   'findupdate': {
     evt: CreateEvent('webViewInternal.onFindReply'),
     fields: [
@@ -150,6 +154,10 @@ WebViewEvents.EVENTS = {
   'subframecertificateerror': {
     evt: CreateEvent('webViewInternal.onSubFrameCertificateError'),
     fields: ['certificate']
+  },
+  'titlechange': {
+      evt: CreateEvent('webViewInternal.onTitleChange'),
+      fields: ['title']
   },
   'unresponsive': {
     evt: CreateEvent('webViewInternal.onUnresponsive'),

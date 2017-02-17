@@ -43,6 +43,7 @@
 #include "content/public/browser/user_metrics.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_delegate.h"
+#include "content/public/common/favicon_url.h"
 #include "content/public/common/media_stream_request.h"
 #include "content/public/common/page_zoom.h"
 #include "content/public/common/result_codes.h"
@@ -874,6 +875,10 @@ void WebViewGuest::DidCommitProvisionalLoadForFrame(
     dict->SetString("favicon", web_contents()->GetController().GetEntryAtIndex(i)->GetFavicon().url.spec());
     history->Append(dict);
   }
+
+  FaviconEvent(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex())->GetFavicon().url.spec());
+  TitleWasSet(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex()), true);
+
   args->Set("pagesHistory", history);
   args->SetInteger(webview::kInternalProcessId,
                    web_contents()->GetRenderProcessHost()->GetID());
@@ -1483,6 +1488,28 @@ void WebViewGuest::VisibleSSLStateChanged(const content::WebContents* source) {
     webview::kEventSSLChange, std::move(args)));
 }
 
+void WebViewGuest::FaviconEvent(const std::string& faviconUrl)
+{
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kFaviconUrl, faviconUrl);
+  DispatchEventToView(base::MakeUnique<GuestViewEvent>(webview::kEventFaviconChange,
+    std::move(args)));
+}
+
+void WebViewGuest::DidUpdateFaviconURL(const std::vector<content::FaviconURL>& candidates) {
+  if (!candidates.empty())
+    FaviconEvent(candidates[0].icon_url.spec());
+  else
+    FaviconEvent("");
+}
+
+void WebViewGuest::TitleWasSet(content::NavigationEntry* entry, bool explicit_set) {
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kTitle, entry->GetTitleForDisplay());
+  DispatchEventToView(base::MakeUnique<GuestViewEvent>(webview::kEventTitleChange,
+    std::move(args)));
+}
+
 void WebViewGuest::LoadURLWithParams(
     const GURL& url,
     const content::Referrer& referrer,
@@ -1510,7 +1537,7 @@ void WebViewGuest::LoadURLWithParams(
       scheme_is_blocked = false;
     }
   }
-    
+
   // Do not allow navigating a guest to schemes other than known safe schemes.
   // This will block the embedder trying to load unwanted schemes, e.g.
   // chrome://.
