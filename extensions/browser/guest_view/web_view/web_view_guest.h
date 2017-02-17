@@ -30,6 +30,11 @@ namespace content {
 struct GlobalRequestID;
 }  // namespace content
 
+namespace content {
+  class NavigationEntry;
+  struct FaviconURL;
+}
+
 namespace extensions {
 
 class WebViewInternalFindFunction;
@@ -259,6 +264,10 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
 
   void OnCertificateError(base::ListValue* certificate) final;
   void OnSubFrameCertificateError(base::ListValue* certificate) final;
+
+  void FaviconEvent(const std::string& faviconUrl);
+  void DidUpdateFaviconURL(const std::vector<content::FaviconURL>& candidates) final;
+  void TitleWasSet(content::NavigationEntry* entry, bool explicit_set) final;
 
   // WebContentsObserver implementation.
   void DidCommitProvisionalLoadForFrame(
