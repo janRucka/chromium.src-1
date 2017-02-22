@@ -876,8 +876,10 @@ void WebViewGuest::DidCommitProvisionalLoadForFrame(
     history->Append(dict);
   }
 
-  FaviconEvent(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex())->GetFavicon().url.spec());
-  TitleWasSet(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex()), true);
+  if (transition_type == ui::PageTransition::PAGE_TRANSITION_AUTO_TOPLEVEL) {
+    FaviconEvent(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex())->GetFavicon().url.spec());
+    TitleWasSet(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex()), true);
+  }
 
   args->Set("pagesHistory", history);
   args->SetInteger(webview::kInternalProcessId,
