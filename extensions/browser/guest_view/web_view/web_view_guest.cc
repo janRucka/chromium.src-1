@@ -43,6 +43,7 @@
 #include "content/public/browser/user_metrics.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_delegate.h"
+#include "content/public/common/favicon_url.h"
 #include "content/public/common/media_stream_request.h"
 #include "content/public/common/page_zoom.h"
 #include "content/public/common/result_codes.h"
@@ -874,6 +875,12 @@ void WebViewGuest::DidCommitProvisionalLoadForFrame(
     dict->SetString("favicon", web_contents()->GetController().GetEntryAtIndex(i)->GetFavicon().url.spec());
     history->Append(dict);
   }
+
+  if (transition_type == ui::PageTransition::PAGE_TRANSITION_AUTO_TOPLEVEL) {
+    FaviconEvent(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex())->GetFavicon().url.spec());
+    TitleWasSet(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex()), true);
+  }
+
   args->Set("pagesHistory", history);
   args->SetInteger(webview::kInternalProcessId,
                    web_contents()->GetRenderProcessHost()->GetID());
@@ -1216,9 +1223,11 @@ void WebViewGuest::ApplyAttributes(const base::DictionaryValue& params) {
 
   // Only read the src attribute if this is not a New Window API flow.
   if (!is_pending_new_window) {
-    std::string src;
-    if (params.GetString(webview::kAttributeSrc, &src))
-      NavigateGuest(src, true /* force_navigation */);
+    std::string src, partition;
+    // if partition is dirty fix so we don't reload webview after display none -> display flex
+    if (params.GetString(webview::kAttributeSrc, &src) 
+      && params.GetString(webview::kStoragePartitionId, &partition))
+        NavigateGuest(src, true /* force_navigation */);
   }
 }
 
@@ -1481,6 +1490,28 @@ void WebViewGuest::VisibleSSLStateChanged(const content::WebContents* source) {
     webview::kEventSSLChange, std::move(args)));
 }
 
+void WebViewGuest::FaviconEvent(const std::string& faviconUrl)
+{
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kFaviconUrl, faviconUrl);
+  DispatchEventToView(base::MakeUnique<GuestViewEvent>(webview::kEventFaviconChange,
+    std::move(args)));
+}
+
+void WebViewGuest::DidUpdateFaviconURL(const std::vector<content::FaviconURL>& candidates) {
+  if (!candidates.empty())
+    FaviconEvent(candidates[0].icon_url.spec());
+  else
+    FaviconEvent("");
+}
+
+void WebViewGuest::TitleWasSet(content::NavigationEntry* entry, bool explicit_set) {
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kTitle, entry->GetTitleForDisplay());
+  DispatchEventToView(base::MakeUnique<GuestViewEvent>(webview::kEventTitleChange,
+    std::move(args)));
+}
+
 void WebViewGuest::LoadURLWithParams(
     const GURL& url,
     const content::Referrer& referrer,
@@ -1508,7 +1539,7 @@ void WebViewGuest::LoadURLWithParams(
       scheme_is_blocked = false;
     }
   }
-    
+
   // Do not allow navigating a guest to schemes other than known safe schemes.
   // This will block the embedder trying to load unwanted schemes, e.g.
   // chrome://.
