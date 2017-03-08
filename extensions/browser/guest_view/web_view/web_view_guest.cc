@@ -876,7 +876,8 @@ void WebViewGuest::DidCommitProvisionalLoadForFrame(
     history->Append(dict);
   }
 
-  if (transition_type == ui::PageTransition::PAGE_TRANSITION_AUTO_TOPLEVEL) {
+  if (transition_type == ui::PageTransition::PAGE_TRANSITION_AUTO_TOPLEVEL ||
+      transition_type & ui::PageTransition::PAGE_TRANSITION_FORWARD_BACK) {
     FaviconEvent(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex())->GetFavicon().url.spec());
     TitleWasSet(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex()), true);
   }
@@ -1506,6 +1507,9 @@ void WebViewGuest::DidUpdateFaviconURL(const std::vector<content::FaviconURL>& c
 }
 
 void WebViewGuest::TitleWasSet(content::NavigationEntry* entry, bool explicit_set) {
+  if (!entry)
+    return;
+
   std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
   args->SetString(webview::kTitle, entry->GetTitleForDisplay());
   DispatchEventToView(base::MakeUnique<GuestViewEvent>(webview::kEventTitleChange,
