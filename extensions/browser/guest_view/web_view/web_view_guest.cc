@@ -17,6 +17,7 @@
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
 #include "build/build_config.h"
+#include "chrome/common/pref_names.h"
 #include "components/browsing_data/storage_partition_http_cache_data_remover.h"
 #include "components/guest_view/browser/guest_view_event.h"
 #include "components/guest_view/browser/guest_view_manager.h"
@@ -42,6 +43,7 @@
 #include "content/public/browser/user_metrics.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_delegate.h"
+#include "content/public/common/favicon_url.h"
 #include "content/public/common/media_stream_request.h"
 #include "content/public/common/page_zoom.h"
 #include "content/public/common/result_codes.h"
@@ -858,6 +860,13 @@ void WebViewGuest::DidCommitProvisionalLoadForFrame(
     dict->SetString("favicon", web_contents()->GetController().GetEntryAtIndex(i)->GetFavicon().url.spec());
     history->Append(dict);
   }
+
+  if (transition_type == ui::PageTransition::PAGE_TRANSITION_AUTO_TOPLEVEL ||
+      transition_type & ui::PageTransition::PAGE_TRANSITION_FORWARD_BACK) {
+    FaviconEvent(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex())->GetFavicon().url.spec());
+    TitleWasSet(web_contents()->GetController().GetEntryAtIndex(web_contents()->GetController().GetCurrentEntryIndex()), true);
+  }
+
   args->Set("pagesHistory", history);
   args->SetInteger(webview::kInternalProcessId,
                    web_contents()->GetRenderProcessHost()->GetID());
@@ -1194,9 +1203,11 @@ void WebViewGuest::ApplyAttributes(const base::DictionaryValue& params) {
 
   // Only read the src attribute if this is not a New Window API flow.
   if (!is_pending_new_window) {
-    std::string src;
-    if (params.GetString(webview::kAttributeSrc, &src))
-      NavigateGuest(src, true /* force_navigation */);
+    std::string src, partition;
+    // if partition is dirty fix so we don't reload webview after display none -> display flex
+    if (params.GetString(webview::kAttributeSrc, &src)
+      && params.GetString(webview::kStoragePartitionId, &partition))
+        NavigateGuest(src, true /* force_navigation */);
   }
 }
 
@@ -1460,6 +1471,32 @@ void WebViewGuest::VisibleSSLStateChanged(const content::WebContents* source) {
     DispatchEventToView(make_scoped_ptr(
       new GuestViewEvent(webview::kEventSSLChange, std::move(args))));
 }
+
+void WebViewGuest::FaviconEvent(const std::string& faviconUrl)
+{
+  scoped_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kFaviconUrl, faviconUrl);
+  DispatchEventToView(make_scoped_ptr(
+    new GuestViewEvent(webview::kEventFaviconChange, std::move(args))));
+}
+
+void WebViewGuest::DidUpdateFaviconURL(const std::vector<content::FaviconURL>& candidates) {
+  if (!candidates.empty())
+    FaviconEvent(candidates[0].icon_url.spec());
+  else
+    FaviconEvent("");
+}
+
+void WebViewGuest::TitleWasSet(content::NavigationEntry* entry, bool explicit_set) {
+  if (!entry)
+    return;
+
+  scoped_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kTitle, entry->GetTitleForDisplay(prefs::kAcceptLanguages));
+  DispatchEventToView(make_scoped_ptr(
+    new GuestViewEvent(webview::kEventTitleChange, std::move(args))));
+}
+
 
 void WebViewGuest::LoadURLWithParams(
     const GURL& url,

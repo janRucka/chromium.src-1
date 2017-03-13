@@ -43,6 +43,8 @@ bool IsSetAsDefaultAsynchronous();
 // (only for the current user). Returns false if this operation fails.
 bool SetAsDefaultProtocolClient(const std::string& protocol);
 
+bool Register();
+
 // Initiates an OS shell flow which (if followed by the user) should set
 // Chrome as the default handler for |protocol|. Returns false if the flow
 // cannot be initialized, if it is not supported (introduced for Windows 8)
@@ -206,13 +208,13 @@ class DefaultWebClientObserver {
 //  set_interactive_permitted(), in which case an attempt to set Chrome as
 //  the default handler will silently fail on such platforms.
 class DefaultWebClientWorker
-    : public base::RefCountedThreadSafe<DefaultWebClientWorker> {
+  : public base::RefCountedThreadSafe<DefaultWebClientWorker> {
  public:
   // Constructor. The worker will post updates to |observer|. If
   // |delete_observer| is true, the worker owns the observer and it will be
   // freed in the destructor.
   DefaultWebClientWorker(DefaultWebClientObserver* observer,
-                         bool delete_observer);
+    bool delete_observer);
 
   // Controls whether the worker can use user interaction to set the default
   // web client. If false, the set-as-default operation will fail on OS where
@@ -230,6 +232,8 @@ class DefaultWebClientWorker
   // observer, once the operation has completed the new default will be
   // queried and the current status reported via SetDefaultWebClientUIState.
   void StartSetAsDefault();
+
+  void StartRegistration();
 
   // Called to notify the worker that the view is gone.
   void ObserverDestroyed();
@@ -302,6 +306,8 @@ class DefaultWebClientWorker
   // the UI thread.
   virtual void SetAsDefault() = 0;
 
+  virtual void Registration() = 0;
+
   // Returns the prefix used for metrics to differentiate UMA metrics for
   // setting the default browser and setting the default protocol client.
   virtual const char* GetHistogramPrefix() = 0;
@@ -366,6 +372,8 @@ class DefaultBrowserWorker : public DefaultWebClientWorker {
   // Set Chrome as the default browser.
   void SetAsDefault() override;
 
+  void Registration() override;
+
   // Returns the histogram prefix for DefaultBrowserWorker.
   const char* GetHistogramPrefix() override;
 
@@ -413,6 +421,8 @@ class DefaultProtocolClientWorker : public DefaultWebClientWorker {
 
   // Set Chrome as the default handler for this protocol.
   void SetAsDefault() override;
+
+  void Registration() override;
 
   // Returns the histogram prefix for DefaultProtocolClientWorker.
   const char* GetHistogramPrefix() override;

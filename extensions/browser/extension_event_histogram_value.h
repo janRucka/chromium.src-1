@@ -418,6 +418,8 @@ enum HistogramValue {
   WEB_VIEW_INTERNAL_ON_SSL_CHANGE,
   WEB_VIEW_INTERNAL_ON_SUBFRAME_CERTIFICATE_ERROR,
   WEB_VIEW_INTERNAL_ON_BLOCKED_UNAUTHORIZED_PLUGIN,
+  WEB_VIEW_INTERNAL_ON_TITLE_CHANGE,
+  WEB_VIEW_INTERNAL_ON_FAVICON_CHANGE,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY
