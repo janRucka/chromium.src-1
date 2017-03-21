@@ -904,7 +904,6 @@ net_log::ChromeNetLog* BrowserProcessImpl::net_log() {
   return net_log_.get();
 }
 
-#if 0
 component_updater::ComponentUpdateService*
 BrowserProcessImpl::component_updater() {
   if (component_updater_)
@@ -921,7 +920,6 @@ BrowserProcessImpl::component_updater() {
 
   return component_updater_.get();
 }
-#endif
 
 #if 0
 CRLSetFetcher* BrowserProcessImpl::crl_set_fetcher() {
