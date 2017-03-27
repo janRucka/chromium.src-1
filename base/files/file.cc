@@ -29,7 +29,7 @@ File::File()
 #if !defined(OS_NACL)
 File::File(const FilePath& path, uint32_t flags)
     : error_details_(FILE_OK), created_(false), async_(false) {
-  Initialize(path, flags);
+  Initialize(path, flags | File::FLAG_SHARE_DELETE);
 }
 #endif
 
