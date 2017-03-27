@@ -6,6 +6,7 @@
 
 #include <stdint.h>
 
+#include <algorithm>
 #include <limits>
 #include <set>
 #include <string>
@@ -66,12 +67,15 @@ void RecordUmaAccessPoints(int count) {
   const int max = 20;
   const int buckets = 21;
   UMA_HISTOGRAM_CUSTOM_COUNTS("Geolocation.NetworkLocationRequest.AccessPoints",
-                              count, min, max, buckets);
+      count, min, max, buckets);
 }
 
 // Local functions
 // Creates the request url to send to the server.
 GURL FormRequestURL(const GURL& url);
+
+GURL FormRequestURLNoAPIKey(const WifiData& wifi_data,
+                            const base::Time& wifi_timestamp);
 
 void FormUploadData(const WifiData& wifi_data,
                     const base::Time& wifi_timestamp,
@@ -95,9 +99,12 @@ bool ParseServerResponse(const std::string& response_body,
                          const base::Time& wifi_timestamp,
                          Geoposition* position,
                          base::string16* access_token);
+
 void AddWifiData(const WifiData& wifi_data,
                  int age_milliseconds,
                  base::DictionaryValue* request);
+
+int GetAge(const base::Time& wifi_timestamp);
 }  // namespace
 
 int NetworkLocationRequest::url_fetcher_id_for_tests = 0;
@@ -123,17 +130,28 @@ bool NetworkLocationRequest::MakeRequest(const base::string16& access_token,
   wifi_data_ = wifi_data;
   wifi_timestamp_ = wifi_timestamp;
 
-  GURL request_url = FormRequestURL(url_);
-  url_fetcher_ = net::URLFetcher::Create(url_fetcher_id_for_tests, request_url,
-                                         net::URLFetcher::POST, this);
-  url_fetcher_->SetRequestContext(url_context_.get());
-  std::string upload_data;
-  FormUploadData(wifi_data, wifi_timestamp, access_token, &upload_data);
-  url_fetcher_->SetUploadData("application/json", upload_data);
+  // if APIKey is not available
+  if (google_apis::GetAPIKey() == "dummytoken")
+  {
+    GURL request_url = FormRequestURLNoAPIKey(wifi_data, wifi_timestamp);
+    url_fetcher_ = net::URLFetcher::Create(url_fetcher_id_for_tests, request_url,
+                                           net::URLFetcher::GET, this);
+    url_fetcher_->SetRequestContext(url_context_.get());
+  }
+  else
+  {
+    GURL request_url = FormRequestURL(url_);
+    url_fetcher_ = net::URLFetcher::Create(url_fetcher_id_for_tests, request_url,
+                                           net::URLFetcher::POST, this);
+    url_fetcher_->SetRequestContext(url_context_.get());
+    std::string upload_data;
+    FormUploadData(wifi_data, wifi_timestamp, access_token, &upload_data);
+    url_fetcher_->SetUploadData("application/json", upload_data);
+  }
   url_fetcher_->SetLoadFlags(net::LOAD_BYPASS_CACHE | net::LOAD_DISABLE_CACHE |
                              net::LOAD_DO_NOT_SAVE_COOKIES |
                              net::LOAD_DO_NOT_SEND_COOKIES |
-                             net::LOAD_DO_NOT_SEND_AUTH_DATA);
+      net::LOAD_DO_NOT_SEND_AUTH_DATA);
 
   request_start_time_ = base::TimeTicks::Now();
   url_fetcher_->Start();
@@ -198,18 +216,42 @@ GURL FormRequestURL(const GURL& url) {
   return url;
 }
 
-void FormUploadData(const WifiData& wifi_data,
-                    const base::Time& wifi_timestamp,
-                    const base::string16& access_token,
-                    std::string* upload_data) {
-  int age = std::numeric_limits<int32_t>::min();  // Invalid so AddInteger()
-                                                  // will ignore.
+GURL FormRequestURLNoAPIKey(const WifiData& wifi_data,
+                            const base::Time& wifi_timestamp) {
+  std::string url = "https://maps.googleapis.com/maps/api/browserlocation/json"
+                    "?browser=chromium&sensor=true";
+
+  for (const AccessPointData& data : wifi_data.access_point_data)
+  {
+    url.append("&wifi=mac:");
+    std::string macAddress = base::UTF16ToUTF8(data.mac_address);
+    std::replace(macAddress.begin(), macAddress.end(), '-', ':');
+    url.append(macAddress);
+    url.append("|ssid:");
+    url.append(base::UTF16ToUTF8(data.ssid));
+    url.append("|ss:");
+    url.append(std::to_string(data.radio_signal_strength));
+  }
+
+  return GURL(url);
+}
+
+int GetAge(const base::Time& wifi_timestamp) {
   if (!wifi_timestamp.is_null()) {
     // Convert absolute timestamps into a relative age.
     int64_t delta_ms = (base::Time::Now() - wifi_timestamp).InMilliseconds();
     if (delta_ms >= 0 && delta_ms < std::numeric_limits<int32_t>::max())
-      age = static_cast<int>(delta_ms);
+      return static_cast<int>(delta_ms);
   }
+  return std::numeric_limits<int32_t>::min(); // Invalid so AddInteger() 
+                                              // will ignore.
+}
+
+void FormUploadData(const WifiData& wifi_data,
+                    const base::Time& wifi_timestamp,
+                    const base::string16& access_token,
+                    std::string* upload_data) {
+  int age = GetAge(wifi_timestamp);
 
   base::DictionaryValue request;
   AddWifiData(wifi_data, age, &request);
@@ -267,14 +309,14 @@ void AddWifiData(const WifiData& wifi_data,
 void FormatPositionError(const GURL& server_url,
                          const std::string& message,
                          Geoposition* position) {
-  position->error_code = Geoposition::ERROR_CODE_POSITION_UNAVAILABLE;
-  position->error_message = "Network location provider at '";
-  position->error_message += server_url.GetOrigin().spec();
-  position->error_message += "' : ";
-  position->error_message += message;
-  position->error_message += ".";
-  VLOG(1) << "NetworkLocationRequest::GetLocationFromResponse() : "
-          << position->error_message;
+    position->error_code = Geoposition::ERROR_CODE_POSITION_UNAVAILABLE;
+    position->error_message = "Network location provider at '";
+    position->error_message += server_url.GetOrigin().spec();
+    position->error_message += "' : ";
+    position->error_message += message;
+    position->error_message += ".";
+    VLOG(1) << "NetworkLocationRequest::GetLocationFromResponse() : "
+            << position->error_message;
 }
 
 void GetLocationFromResponse(bool http_post_result,
