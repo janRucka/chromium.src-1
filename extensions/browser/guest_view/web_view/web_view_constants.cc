@@ -12,6 +12,7 @@ const char kAttributeAllowScaling[] = "allowscaling";
 const char kAttributeName[] = "name";
 const char kAttributeSrc[] = "src";
 const char kAttributeAllowNW[] = "allownw";
+const char kAttributeUseAutomaticCertHandling[] = "useautomaticcerthandling";
 const char kAttributeUseNewProcess[] = "usenewprocess";
 
 // API namespace.
@@ -23,6 +24,7 @@ const char kAPILoadDataInvalidBaseURL[] = "Invalid base URL \"%s\".";
 const char kAPILoadDataInvalidVirtualURL[] = "Invalid virtual URL \"%s\".";
 
 // Events.
+const char kEventCertificateError[] = "webViewInternal.onCertificateError";
 const char kEventClose[] = "webViewInternal.onClose";
 const char kEventConsoleMessage[] = "webViewInternal.onConsoleMessage";
 const char kEventContentLoad[] = "webViewInternal.onContentLoad";
@@ -47,6 +49,7 @@ const char kEventResponseStarted[] = "webViewInternal.onResponseStarted";
 const char kEventResponsive[] = "webViewInternal.onResponsive";
 const char kEventSizeChanged[] = "webViewInternal.onSizeChanged";
 const char kEventSSLChange[] = "webViewInternal.onSSLChange";
+const char kEventSubFrameCertificateError[] = "webViewInternal.onSubFrameCertificateError";
 const char kEventUnresponsive[] = "webViewInternal.onUnresponsive";
 const char kEventZoomChange[] = "webViewInternal.onZoomChange";
 
