@@ -86,7 +86,7 @@ FileEnumerator::FileInfo FileEnumerator::GetInfo() const {
 }
 
 FilePath FileEnumerator::Next() {
-  base::ThreadRestrictions::AssertIOAllowed();
+  // base::ThreadRestrictions::AssertIOAllowed();
 
   while (has_find_data_ || !pending_paths_.empty()) {
     if (!has_find_data_) {

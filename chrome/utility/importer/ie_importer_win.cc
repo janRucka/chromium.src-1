@@ -867,7 +867,7 @@ void IEImporter::ParseFavoritesFolder(
     if (url.host() == "go.microsoft.com")
       continue;
     // Read favicon.
-    UpdateFaviconMap(*it, url, url_locator.get(), &favicon_map);
+    // UpdateFaviconMap(*it, url, url_locator.get(), &favicon_map);
 
     // Make the relative path from the Favorites folder, without the basename.
     // ex. Suppose that the Favorites folder is C:\Users\Foo\Favorites.
