@@ -27,6 +27,9 @@ namespace shell_integration {
 // Prefer to use the DefaultBrowserWorker class below since it works on all OSs.
 bool SetAsDefaultBrowser();
 
+
+bool Register(base::Callback<void(bool)> callback);
+
 // Sets Chrome as the default client application for the given protocol
 // (only for the current user). Returns false if this operation fails.
 // Prefer to use the DefaultProtocolClientWorker class below since it works on
@@ -156,6 +159,9 @@ class DefaultWebClientWorker
   // the default state to the caller.
   void StartSetAsDefault();
 
+  // Register app as able to handle default files (e.g. *.htm, *.pdf) 
+  void StartRegistration();
+
  protected:
   friend class base::RefCountedThreadSafe<DefaultWebClientWorker>;
 
@@ -179,8 +185,13 @@ class DefaultWebClientWorker
   // will be reported to UMA as the result of the set-as-default operation.
   void CheckIsDefault(bool is_following_set_as_default);
 
+  void IsRegistered(bool registered);
+
   // Sets Chrome as the default web client. Always called on the FILE thread.
   void SetAsDefault();
+
+  // Register app as able to handle default files (e.g. *.htm, *.pdf) 
+  void Registration();
 
   // Implementation of CheckIsDefault() and SetAsDefault() for subclasses.
   virtual DefaultWebClientState CheckIsDefaultImpl() = 0;
