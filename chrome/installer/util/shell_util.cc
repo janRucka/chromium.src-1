@@ -137,6 +137,7 @@ UserSpecificRegistrySuffix::UserSpecificRegistrySuffix() {
   base::MD5Digest md5_digest;
   std::string user_sid_ascii(base::UTF16ToASCII(user_sid));
   base::MD5Sum(user_sid_ascii.c_str(), user_sid_ascii.length(), &md5_digest);
+  md5_digest.a[15]++; // small change so we don't have the same suffix as chromium
   std::string base32_md5 = base32::Base32Encode(
       base::StringPiece(reinterpret_cast<char*>(md5_digest.a),
                         arraysize(md5_digest.a)),
