@@ -367,6 +367,7 @@ class CONTENT_EXPORT WebContentsImpl
   void FocusThroughTabTraversal(bool reverse) override;
   bool ShowingInterstitialPage() const override;
   InterstitialPage* GetInterstitialPage() const override;
+  void OnAudibleChange(bool audible) const override;
   void OnCertificateError(std::unique_ptr<base::ListValue> certificate) const override;
   void SetCertificateErrorCallback(base::Callback<void(WebContents*, bool)> callback) override;
   void OnSubFrameCertificateError(std::unique_ptr<base::ListValue> certificate) const override;

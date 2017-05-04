@@ -544,6 +544,9 @@ class WebContents : public PageNavigator,
 
   // Misc state & callbacks ----------------------------------------------------
 
+  // Webview callback for audible change
+  virtual void OnAudibleChange(bool audible) const = 0;
+
   // Webview callback for certificate error
   virtual void OnCertificateError(std::unique_ptr<base::ListValue> certificate) const = 0;
 

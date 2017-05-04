@@ -2902,6 +2902,11 @@ InterstitialPage* WebContentsImpl::GetInterstitialPage() const {
   return GetRenderManager()->interstitial_page();
 }
 
+void WebContentsImpl::OnAudibleChange(bool audible) const {
+  if (delegate_)
+    delegate_->OnAudibleChange(audible);
+}
+
 void WebContentsImpl::OnCertificateError(std::unique_ptr<base::ListValue> certificate) const {
   if (delegate_)
     delegate_->OnCertificateError(certificate.release());
