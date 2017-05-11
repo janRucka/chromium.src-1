@@ -18,6 +18,7 @@
 #include "base/strings/stringprintf.h"
 #include "base/strings/utf_string_conversions.h"
 #include "build/build_config.h"
+#include "chrome/browser/certificate_viewer.h"
 #include "components/browsing_data/content/storage_partition_http_cache_data_remover.h"
 #include "components/guest_view/browser/guest_view_event.h"
 #include "components/guest_view/browser/guest_view_manager.h"
@@ -628,6 +629,17 @@ void WebViewGuest::OnAudibleChange(bool audible)
   args->Set(webview::kAudible, base::MakeUnique<base::Value>(audible));
   DispatchEventToView(base::MakeUnique<GuestViewEvent>(
     webview::kEventAudibleChange, std::move(args)));
+}
+
+void WebViewGuest::ShowCurrentCertificateDetails() const {
+  if (web_contents() == nullptr || web_contents()->GetController().GetActiveEntry() == nullptr)
+    return;
+
+  scoped_refptr<net::X509Certificate> cert = 
+    web_contents()->GetController().GetActiveEntry()->GetSSL().certificate;
+
+  if (!!cert)
+    ShowCertificateViewer(web_contents(), web_contents()->GetTopLevelNativeWindow(), cert.get());
 }
 
 double WebViewGuest::GetZoom() const {

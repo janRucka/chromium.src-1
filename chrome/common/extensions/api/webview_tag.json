@@ -677,7 +677,12 @@
       }
     ],
     "functions": [
-        {
+      {
+        "name": "showCurrentCertificateDetails",
+        "type": "function",
+        "description": "Show current certificate details window."
+      },
+      {
         "name": "setAudioMuted",
         "type": "function",
         "description": "Set audio mute.",

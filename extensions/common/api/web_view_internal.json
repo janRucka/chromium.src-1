@@ -185,6 +185,18 @@
     ],
     "functions": [
       {
+        "name": "showCurrentCertificateDetails",
+        "type": "function",
+        "description": "Show current certificate details window.",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "instanceId",
+            "description": "The instance ID of the guest <webview> process."
+          }
+        ]
+      },
+      {
         "name": "setAudioMuted",
         "type": "function",
         "description": "Set audio mute.",

@@ -448,6 +448,24 @@ private:
   DISALLOW_COPY_AND_ASSIGN(WebViewInternalAllowCertificateFunction);
 };
 
+class WebViewInternalShowCurrentCertificateDetailsFunction 
+  : public LegacyWebViewInternalExtensionFunction {
+public:
+  DECLARE_EXTENSION_FUNCTION("webViewInternal.showCurrentCertificateDetails"
+  , WEBVIEWINTERNAL_SETAUDIOMUTED);
+
+  WebViewInternalShowCurrentCertificateDetailsFunction();
+
+protected:
+  ~WebViewInternalShowCurrentCertificateDetailsFunction() override;
+
+private:
+  // WebViewInternalExtensionFunction implementation.
+  bool RunAsyncSafe(WebViewGuest* guest) override;
+
+  DISALLOW_COPY_AND_ASSIGN(WebViewInternalShowCurrentCertificateDetailsFunction);
+};
+
 class WebViewInternalSetAudioMutedFunction : public LegacyWebViewInternalExtensionFunction {
 public:
   DECLARE_EXTENSION_FUNCTION("webViewInternal.setAudioMuted", WEBVIEWINTERNAL_SETAUDIOMUTED);
