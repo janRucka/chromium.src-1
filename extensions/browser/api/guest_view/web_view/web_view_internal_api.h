@@ -448,6 +448,24 @@ private:
   DISALLOW_COPY_AND_ASSIGN(WebViewInternalAllowCertificateFunction);
 };
 
+class WebViewInternalRestoreHistoryFunction
+  : public LegacyWebViewInternalExtensionFunction {
+public:
+  DECLARE_EXTENSION_FUNCTION("webViewInternal.restoreHistory"
+  , WEBVIEWINTERNAL_RESTOREHISTORY);
+
+  WebViewInternalRestoreHistoryFunction();
+
+protected:
+  ~WebViewInternalRestoreHistoryFunction() override;
+
+private:
+  // WebViewInternalExtensionFunction implementation.
+  bool RunAsyncSafe(WebViewGuest* guest) override;
+
+  DISALLOW_COPY_AND_ASSIGN(WebViewInternalRestoreHistoryFunction);
+};
+
 class WebViewInternalShowCurrentCertificateDetailsFunction 
   : public LegacyWebViewInternalExtensionFunction {
 public:

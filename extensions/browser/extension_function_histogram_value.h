@@ -1227,6 +1227,7 @@ enum HistogramValue {
   WEBVIEWINTERNAL_SETAUDIOMUTED,
   WEBVIEWINTERNAL_ISAUDIOMUTED,
   WEBVIEWINTERNAL_SHOWCURRENTCERTIFICATEDETAILS,
+  WEBVIEWINTERNAL_RESTOREHISTORY,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY
