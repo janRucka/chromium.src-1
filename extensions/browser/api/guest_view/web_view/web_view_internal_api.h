@@ -452,7 +452,7 @@ class WebViewInternalShowCurrentCertificateDetailsFunction
   : public LegacyWebViewInternalExtensionFunction {
 public:
   DECLARE_EXTENSION_FUNCTION("webViewInternal.showCurrentCertificateDetails"
-  , WEBVIEWINTERNAL_SETAUDIOMUTED);
+  , WEBVIEWINTERNAL_SHOWCURRENTCERTIFICATEDETAILS);
 
   WebViewInternalShowCurrentCertificateDetailsFunction();
 
