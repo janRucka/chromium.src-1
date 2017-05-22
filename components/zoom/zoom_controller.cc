@@ -349,8 +349,10 @@ void ZoomController::UpdateState(const std::string& host) {
     // The zoom bubble should not be shown for zoom changes where the host
     // is empty.
     zoom_change_data.can_show_bubble = can_show_bubble_ && !host.empty();
-    for (auto& observer : observers_)
-      observer.OnZoomChanged(zoom_change_data);
+    for (auto& observer : observers_) {
+      if (observer.IsWebViewGuest())
+        observer.OnZoomChanged(zoom_change_data);
+    }
   } else {
     // TODO(wjmaclean) Should we consider having HostZoomMap send both old and
     // new zoom levels here?
@@ -359,8 +361,10 @@ void ZoomController::UpdateState(const std::string& host) {
     ZoomChangedEventData zoom_change_data(web_contents(), zoom_level,
                                           zoom_level, zoom_mode_,
                                           false /* can_show_bubble */);
-    for (auto& observer : observers_)
-      observer.OnZoomChanged(zoom_change_data);
+    for (auto& observer : observers_) {
+      if (observer.IsWebViewGuest())
+        observer.OnZoomChanged(zoom_change_data);
+    }
   }
 }
 
