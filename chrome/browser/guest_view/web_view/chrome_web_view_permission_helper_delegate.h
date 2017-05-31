@@ -27,6 +27,8 @@ class ChromeWebViewPermissionHelperDelegate :
   void CanDownload(const GURL& url,
                    const std::string& request_method,
                    const base::Callback<void(bool)>& callback) override;
+  void CanNotify(const GURL& url,
+                 const base::Callback<void(bool)>& callback) override;
   void RequestPointerLockPermission(
       bool user_gesture,
       bool last_unlocked_by_target,
@@ -88,6 +90,11 @@ class ChromeWebViewPermissionHelperDelegate :
       const base::Callback<void(bool)>& callback,
       bool allow,
       const std::string& user_input);
+
+  void OnNotificationPermissionResponse(
+    const base::Callback<void(bool)>& callback,
+    bool allow,
+    const std::string& user_input);
 
   void OnDownloadPermissionResponse(
       const base::Callback<void(bool)>& callback,

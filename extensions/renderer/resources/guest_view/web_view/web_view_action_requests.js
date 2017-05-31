@@ -15,7 +15,8 @@ var PERMISSION_TYPES = ['media',
                         'download',
                         'loadplugin',
                         'filesystem',
-                        'fullscreen'];
+                        'fullscreen',
+                        'notification'];
 
 // -----------------------------------------------------------------------------
 // WebViewActionRequest object.

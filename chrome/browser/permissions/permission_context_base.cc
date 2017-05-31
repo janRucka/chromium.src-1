@@ -121,8 +121,9 @@ void PermissionContextBase::RequestPermission(
   PermissionResult result =
       GetPermissionStatus(requesting_origin, embedding_origin);
 
-  if (result.content_setting == CONTENT_SETTING_ALLOW ||
-      result.content_setting == CONTENT_SETTING_BLOCK) {
+  if ((result.content_setting == CONTENT_SETTING_ALLOW ||
+      result.content_setting == CONTENT_SETTING_BLOCK) &&
+      content_settings_type_ != CONTENT_SETTINGS_TYPE_NOTIFICATIONS) {
     if (result.source == PermissionStatusSource::KILL_SWITCH) {
       // Block the request and log to the developer console.
       LogPermissionBlockedMessage(web_contents,
