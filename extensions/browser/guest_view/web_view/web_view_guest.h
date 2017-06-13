@@ -198,7 +198,7 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
   void GuestViewDidStopLoading() final;
   void GuestZoomChanged(double old_zoom_level, double new_zoom_level) final;
   // ui_zoom::ZoomObserver implementation.
-  bool IsWebViewGuest() final { return true; }
+  bool IsWebViewGuest() final;
 
   bool IsAutoSizeSupported() const final;
   void SetContextMenuPosition(const gfx::Point& position) final;
