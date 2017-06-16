@@ -493,9 +493,8 @@ void GuestViewBase::Destroy() {
   auto* embedder_zoom_controller =
     zoom::ZoomController::FromWebContents(owner_web_contents());
   // Chrome Apps do not have a ZoomController.
-  if (!embedder_zoom_controller)
-    return;
-  embedder_zoom_controller->RemoveObserver(this);
+  if (embedder_zoom_controller)
+    embedder_zoom_controller->RemoveObserver(this);
 
   owner_web_contents_ = nullptr;
 
