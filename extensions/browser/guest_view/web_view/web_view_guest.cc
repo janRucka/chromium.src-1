@@ -569,6 +569,8 @@ void WebViewGuest::GuestZoomChanged(double old_zoom_level,
       webview::kEventZoomChange, std::move(args)));
 }
 
+bool WebViewGuest::IsWebViewGuest() { return true; }
+
 void WebViewGuest::WillDestroy() {
   if (!attached() && GetOpener())
     GetOpener()->pending_new_windows_.erase(this);
