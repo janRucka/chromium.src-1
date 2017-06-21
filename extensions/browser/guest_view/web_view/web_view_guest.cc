@@ -912,6 +912,10 @@ void WebViewGuest::DidFinishNavigation(
       LoadAbort(navigation_handle->IsInMainFrame(), navigation_handle->GetURL(),
                 error_code);
     }
+
+    if (!navigation_handle->HasCommitted())
+      return;
+
     errorPage = true;
   }
 
