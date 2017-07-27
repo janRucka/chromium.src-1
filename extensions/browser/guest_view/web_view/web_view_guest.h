@@ -282,6 +282,8 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest>,
 
   void OnAudibleChange(bool audible) final;
 
+  void OnUpdateTargetURL(const GURL& url) final;
+
   // WebContentsObserver implementation.
   void DidStartNavigation(content::NavigationHandle* navigation_handle) final;
   void DidFinishNavigation(content::NavigationHandle* navigation_handle) final;

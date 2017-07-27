@@ -633,6 +633,13 @@ void WebViewGuest::OnAudibleChange(bool audible)
     webview::kEventAudibleChange, std::move(args)));
 }
 
+void WebViewGuest::OnUpdateTargetURL(const GURL& url) {
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->Set(webview::kTargetURL, base::MakeUnique<base::Value>(url.spec()));
+  DispatchEventToView(base::MakeUnique<GuestViewEvent>(
+    webview::kEventTargetUrlUpdate, std::move(args)));
+}
+
 void WebViewGuest::ShowCurrentCertificateDetails() const {
   if (web_contents() == nullptr || web_contents()->GetController().GetActiveEntry() == nullptr)
     return;

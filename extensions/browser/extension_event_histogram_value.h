@@ -430,6 +430,7 @@ enum HistogramValue {
   WEB_VIEW_INTERNAL_ON_TITLE_CHANGE,
   WEB_VIEW_INTERNAL_ON_FAVICON_CHANGE,
   WEB_VIEW_INTERNAL_ON_AUDIBLE_CHANGE,
+  WEB_VIEW_INTERNAL_ON_UPDATE_TARGET_URL,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY
