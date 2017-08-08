@@ -1261,12 +1261,10 @@ void ListValue::Append(std::unique_ptr<Value> in_value) {
   list_->push_back(std::move(in_value));
 }
 
-#if !defined(OS_LINUX)
 void ListValue::Append(Value* in_value) {
   DCHECK(in_value);
   Append(WrapUnique(in_value));
 }
-#endif
 
 void ListValue::AppendBoolean(bool in_value) {
   Append(MakeUnique<Value>(in_value));
