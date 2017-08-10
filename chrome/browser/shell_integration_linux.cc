@@ -213,6 +213,11 @@ bool SetAsDefaultBrowser() {
   return SetDefaultWebClient(std::string());
 }
 
+bool Register()
+{
+  return true
+}
+
 bool SetAsDefaultProtocolClient(const std::string& protocol) {
   return SetDefaultWebClient(protocol);
 }

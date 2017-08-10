@@ -66,6 +66,11 @@ bool SetAsDefaultBrowser() {
   return true;
 }
 
+bool Register()
+{
+  return true;
+}
+
 // Sets Chromium as the default application to be used by the operating system
 // for the given protocol. This applies only for the current user. Returns false
 // if this cannot be done, or if the operation fails.
