@@ -577,6 +577,13 @@ void WebViewGuest::OnSubFrameCertificateError(base::ListValue* certificate)
     new GuestViewEvent(webview::kEventSubFrameCertificateError, std::move(args))));
 }
 
+void WebViewGuest::OnUpdateTargetURL(const GURL& url) {
+  scoped_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetString(webview::kTargetURL, url.spec());
+  DispatchEventToView(make_scoped_ptr(
+    new GuestViewEvent(webview::kEventTargetUrlUpdate, std::move(args))));
+}
+
 double WebViewGuest::GetZoom() const {
   double zoom_level =
       ZoomController::FromWebContents(web_contents())->GetZoomLevel();
