@@ -701,6 +701,8 @@ void GuestViewBase::UpdateTargetURL(WebContents* source, const GURL& url) {
 
   embedder_web_contents()->GetDelegate()->UpdateTargetURL(
       embedder_web_contents(), url);
+
+  OnUpdateTargetURL(url);
 }
 
 bool GuestViewBase::ShouldResumeRequestsForCreatedWindow() {

@@ -370,6 +370,7 @@ class GuestViewBase : public content::BrowserPluginGuestDelegate,
   void UpdatePreferredSize(content::WebContents* web_contents,
                            const gfx::Size& pref_size) final;
   void UpdateTargetURL(content::WebContents* source, const GURL& url) final;
+  virtual void OnUpdateTargetURL(const GURL& url) {}
   bool ShouldResumeRequestsForCreatedWindow() final;
 
   // WebContentsObserver implementation.
