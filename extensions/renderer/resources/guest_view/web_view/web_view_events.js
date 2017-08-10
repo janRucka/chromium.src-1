@@ -159,6 +159,10 @@ WebViewEvents.EVENTS = {
       evt: CreateEvent('webViewInternal.onSSLChange'),
       fields: ['certificate']
   },
+  'targeturlupdate': {
+      evt: CreateEvent('webViewInternal.onTargetUrlUpdate'),
+      fields: ['targetUrl']
+  },
   'unresponsive': {
     evt: CreateEvent('webViewInternal.onUnresponsive'),
     fields: ['processId']
