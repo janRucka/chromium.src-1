@@ -215,7 +215,7 @@ bool SetAsDefaultBrowser() {
 
 bool Register()
 {
-  return true
+  return true;
 }
 
 bool SetAsDefaultProtocolClient(const std::string& protocol) {
