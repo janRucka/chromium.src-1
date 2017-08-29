@@ -8,6 +8,7 @@
 #include "base/files/file_path.h"
 #include "base/memory/ptr_util.h"
 #include "build/build_config.h"
+#include "chrome/browser/browser_process.h"
 #include "chrome/browser/data_use_measurement/data_use_web_contents_observer.h"
 #include "chrome/browser/extensions/api/chrome_device_permissions_prompt.h"
 #include "chrome/browser/extensions/api/declarative_content/chrome_content_rules_registry.h"
@@ -25,7 +26,11 @@
 #include "chrome/browser/guest_view/mime_handler_view/chrome_mime_handler_view_guest_delegate.h"
 #include "chrome/browser/guest_view/web_view/chrome_web_view_guest_delegate.h"
 #include "chrome/browser/guest_view/web_view/chrome_web_view_permission_helper_delegate.h"
+#include "chrome/browser/password_manager/chrome_password_manager_client.h"
+#include "chrome/browser/ui/autofill/chrome_autofill_client.h"
 #include "chrome/browser/ui/pdf/chrome_pdf_web_contents_helper_client.h"
+#include "chrome/common/url_constants.h"
+#include "components/autofill/content/browser/content_autofill_driver_factory.h"
 #include "components/pdf/browser/pdf_web_contents_helper.h"
 #include "content/public/browser/browser_context.h"
 #include "content/public/browser/browser_thread.h"
@@ -84,6 +89,16 @@ void ChromeExtensionsAPIClient::AttachWebContentsHelpers(
   pdf::PDFWebContentsHelper::CreateForWebContentsWithClient(
       web_contents, std::unique_ptr<pdf::PDFWebContentsHelperClient>(
                         new ChromePDFWebContentsHelperClient()));
+
+  autofill::ChromeAutofillClient::CreateForWebContents(web_contents);
+  ChromePasswordManagerClient::CreateForWebContentsWithAutofillClient(
+      web_contents,
+      autofill::ChromeAutofillClient::FromWebContents(web_contents));
+  autofill::ContentAutofillDriverFactory::CreateForWebContentsAndDelegate(
+      web_contents,
+      autofill::ChromeAutofillClient::FromWebContents(web_contents),
+      g_browser_process->GetApplicationLocale(),
+      autofill::AutofillManager::ENABLE_AUTOFILL_DOWNLOAD_MANAGER);
 
   data_use_measurement::DataUseWebContentsObserver::CreateForWebContents(
       web_contents);

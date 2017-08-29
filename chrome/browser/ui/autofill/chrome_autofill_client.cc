@@ -258,7 +258,7 @@ void ChromeAutofillClient::ShowAutofillPopup(
       AutofillPopupControllerImpl::GetOrCreate(popup_controller_,
                                                delegate,
                                                web_contents(),
-                                               web_contents()->GetNativeView(),
+                                               web_contents()->GetContentNativeView(),
                                                element_bounds_in_screen_space,
                                                text_direction);
 

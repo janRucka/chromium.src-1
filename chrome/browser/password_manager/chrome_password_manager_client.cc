@@ -385,7 +385,9 @@ void ChromePasswordManagerClient::PasswordWasAutofilled(
 #if !defined(OS_ANDROID)
   PasswordsClientUIDelegate* manage_passwords_ui_controller =
       PasswordsClientUIDelegateFromWebContents(web_contents());
-  manage_passwords_ui_controller->OnPasswordAutofilled(best_matches, origin,
+
+  if (manage_passwords_ui_controller)
+    manage_passwords_ui_controller->OnPasswordAutofilled(best_matches, origin,
                                                        federated_matches);
 #endif
 }
