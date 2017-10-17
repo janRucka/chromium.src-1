@@ -46,7 +46,7 @@ NetworkLocationProvider::PositionCache::PositionCache() {
   base::ThreadRestrictions::SetIOAllowed(true);
   base::FilePath path;
   if (chrome::GetDefaultUserDataDirectory(&path)) {
-    path = path.Append(L"geolocationCache");
+    path = path.AppendASCII("geolocationCache");
     if (base::PathExists(path)) {
       std::string error;
       JSONFileValueDeserializer serializer(path);
@@ -66,7 +66,7 @@ NetworkLocationProvider::PositionCache::PositionCache() {
 
         Geoposition geo;
         base::string16 macAddress;
-        if (!geolocation->GetString("macAddress", &macAddress) 
+        if (!geolocation->GetString("macAddress", &macAddress)
          || !geolocation->GetDouble("latitude", &geo.latitude)
          || !geolocation->GetDouble("longitude", &geo.longitude)
          || !geolocation->GetDouble("altitude", &geo.altitude)
@@ -107,7 +107,7 @@ NetworkLocationProvider::PositionCache::~PositionCache() {
       geolocations->Append(dict);
     }
 
-    JSONFileValueSerializer serializer(path.Append(L"geolocationCache"));
+    JSONFileValueSerializer serializer(path.AppendASCII("geolocationCache"));
     serializer.Serialize(*geolocations);
   }
 }
@@ -136,13 +136,11 @@ bool NetworkLocationProvider::PositionCache::CachePosition(
   const WifiData& wifi_data,
   const Geoposition& position) {
   for (const auto& access_point_data : wifi_data.access_point_data) {
-    std::pair<std::map<base::string16, Geoposition>::iterator, bool> result = 
-      cache_.insert(make_pair(access_point_data.mac_address, position));
+    cache_.insert(make_pair(access_point_data.mac_address, position));
   }
 
   if (wifi_data.access_point_data.size() == 0) {
-    std::pair<std::map<base::string16, Geoposition>::iterator, bool> result =
-      cache_.insert(make_pair(base::UTF8ToUTF16(GetIpForCache()), position));
+    cache_.insert(make_pair(base::UTF8ToUTF16(GetIpForCache()), position));
   }
   CacheChecker();
   return true;
