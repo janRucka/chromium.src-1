@@ -236,6 +236,8 @@ class CONTENT_EXPORT DownloadItemImpl
   std::string GetMimeType() const override;
   std::string GetOriginalMimeType() const override;
   std::string GetRemoteAddress() const override;
+  std::string GetPartitionId() const override;
+  void SetPartitionId(std::string partitionId) override;
   bool HasUserGesture() const override;
   ui::PageTransition GetTransitionType() const override;
   const std::string& GetLastModifiedTime() const override;
@@ -732,6 +734,8 @@ class CONTENT_EXPORT DownloadItemImpl
   // The number of times this download has been resumed automatically. Will be
   // reset to 0 if a resumption is performed in response to a Resume() call.
   int auto_resume_count_ = 0;
+
+  std::string partitionId_;
 
   // In the event of an interruption, the DownloadDestinationObserver interface
   // exposes the partial hash state. This state can be held by the download item
