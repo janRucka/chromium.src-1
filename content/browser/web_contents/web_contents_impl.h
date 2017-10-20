@@ -903,6 +903,9 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
                                  const gfx::RectF& active_rect);
 #endif
 
+  // PartitionId if available from webview
+  std::string GetPartitionId() override;
+
  private:
   friend class WebContentsObserver;
   friend class WebContents;  // To implement factory methods.

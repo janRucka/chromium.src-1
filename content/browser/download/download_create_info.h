@@ -144,6 +144,9 @@ struct CONTENT_EXPORT DownloadCreateInfo {
   // The HTTP request method.
   std::string method;
 
+  // PartitionId if available from webview
+  std::string partition_id;
+
   // Whether the download should fetch the response body for non successful HTTP
   // response.
   bool fetch_error_body = false;
