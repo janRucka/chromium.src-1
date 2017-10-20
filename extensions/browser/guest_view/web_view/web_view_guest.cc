@@ -40,6 +40,7 @@
 #include "content/public/browser/render_widget_host_view.h"
 #include "content/public/browser/resource_request_details.h"
 #include "content/public/browser/site_instance.h"
+#include "content/public/browser/ssl_status.h"
 #include "content/public/browser/storage_partition.h"
 #include "content/public/browser/web_contents.h"
 #include "content/public/browser/web_contents_delegate.h"
@@ -68,6 +69,7 @@
 #include "ipc/ipc_message_macros.h"
 #include "net/base/escape.h"
 #include "net/base/net_errors.h"
+#include "net/cert/x509_certificate.h"
 #include "net/cookies/canonical_cookie.h"
 #include "ui/base/models/simple_menu_model.h"
 #include "ui/events/keycodes/keyboard_codes.h"
@@ -1395,6 +1397,46 @@ void WebViewGuest::RequestToLockMouse(WebContents* web_contents,
       base::Bind(
           base::IgnoreResult(&WebContents::GotResponseToLockMouseRequest),
           base::Unretained(web_contents)));
+}
+
+static base::ListValue *ListValue_FromStringArray(const std::vector<std::string> &arr) {
+  base::ListValue *v = new base::ListValue();
+  for (std::vector<std::string>::const_iterator iter = arr.begin(); iter != arr.end(); ++iter) {
+    v->AppendString(*iter);
+  }
+  return v;
+}
+
+void WebViewGuest::VisibleSecurityStateChanged(content::WebContents* source) {
+  base::DictionaryValue* dict = new base::DictionaryValue;
+  dict->SetString("url", web_contents()->GetController().GetActiveEntry()->GetURL().spec());
+  dict->SetInteger("status", web_contents()->GetController().GetActiveEntry()->GetSSL().cert_status);
+
+  scoped_refptr<net::X509Certificate> cert = web_contents()->GetController().GetActiveEntry()->GetSSL().certificate;
+  if (!!cert) {
+    dict->SetString("issuer.common_name", cert->issuer().common_name);
+    dict->SetString("issuer.country_name", cert->issuer().country_name);
+    dict->SetString("issuer.locality_name", cert->issuer().locality_name);
+    dict->SetList("issuer.street_addresses", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->issuer().street_addresses)));
+    dict->SetList("issuer.domain_components", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->issuer().domain_components)));
+    dict->SetList("issuer.organization_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->issuer().organization_names)));
+    dict->SetList("issuer.organization_unit_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->issuer().organization_unit_names)));
+    dict->SetString("subject.common_name", cert->subject().common_name);
+    dict->SetString("subject.country_name", cert->subject().country_name);
+    dict->SetString("subject.locality_name", cert->subject().locality_name);
+    dict->SetList("subject.street_addresses", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().street_addresses)));
+    dict->SetList("subject.domain_components", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().domain_components)));
+    dict->SetList("subject.organization_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().organization_names)));
+    dict->SetList("subject.organization_unit_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().organization_unit_names)));
+    dict->SetString("fingerprint", base::HexEncode(cert->CalculateFingerprint256(cert->os_cert_handle()).data, sizeof(net::SHA256HashValue)));
+  }
+
+  base::ListValue* certificateInfo = new base::ListValue();
+  certificateInfo->Append(std::unique_ptr<base::Value>(static_cast<base::Value*>(dict)));
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->SetList(webview::kCertificate, std::unique_ptr<base::ListValue>(certificateInfo));
+  DispatchEventToView(base::MakeUnique<GuestViewEvent>(
+    webview::kEventSSLChange, std::move(args)));
 }
 
 void WebViewGuest::LoadURLWithParams(
