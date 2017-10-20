@@ -264,6 +264,21 @@ SrcAttribute.prototype.parse = function() {
 };
 
 // -----------------------------------------------------------------------------
+// UseNewProcessAttribute object.
+
+// Attribute that specifies whether new process should be used.
+function UseNewProcessAttribute(view) {
+  GuestViewAttributes.BooleanAttribute.call(
+      this, WebViewConstants.ATTRIBUTE_USENEWPROCESS, view);
+}
+
+UseNewProcessAttribute.prototype.__proto__ =
+    GuestViewAttributes.BooleanAttribute.prototype;
+    
+UseNewProcessAttribute.prototype.handleMutation =
+    UseNewProcessAttribute.prototype.handleMutation;
+
+// -----------------------------------------------------------------------------
 
 // Sets up all of the webview attributes.
 WebViewImpl.prototype.setupAttributes = function() {
@@ -281,6 +296,8 @@ WebViewImpl.prototype.setupAttributes = function() {
       new SrcAttribute(this);
   this.attributes[WebViewConstants.ATTRIBUTE_ALLOWNW] =
       new AllowNWAttribute(this);
+this.attributes[WebViewConstants.ATTRIBUTE_USENEWPROCESS] =
+      new UseNewProcessAttribute(this);
 
   var autosizeAttributes = [WebViewConstants.ATTRIBUTE_MAXHEIGHT,
                             WebViewConstants.ATTRIBUTE_MAXWIDTH,
