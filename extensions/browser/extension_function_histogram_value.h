@@ -1255,6 +1255,7 @@ enum HistogramValue {
   METRICSPRIVATE_RECORDSPARSEHASHABLE,
   WEBVIEWINTERNAL_ALLOWCERTIFICATE,
   WEB_VIEW_INTERNAL_ON_SUBFRAME_CERTIFICATE_ERROR,
+  WEBVIEWINTERNAL_SHOWCURRENTCERTIFICATEDETAILS,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY
