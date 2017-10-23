@@ -1800,10 +1800,12 @@ int ChromeBrowserMainParts::PreMainMessageLoopRunImpl() {
   // http://crbug.com/105065.
   browser_process_->notification_ui_manager();
 
-#if 0
-  if (!parsed_command_line().HasSwitch(switches::kDisableComponentUpdate))
-    RegisterComponentsForUpdate();
-#endif
+  if (!parsed_command_line().HasSwitch(switches::kDisableComponentUpdate)) {
+    component_updater::ComponentUpdateService* cus =
+      g_browser_process->component_updater();
+    RegisterWidevineCdmComponent(cus);
+  }
+
 #if defined(OS_ANDROID)
   variations::VariationsService* variations_service =
       browser_process_->variations_service();

@@ -893,13 +893,11 @@ void ChromeMainDelegate::PreSandboxStartup() {
 #endif
   }
 
-#if 0
   // Register component_updater PathProvider after DIR_USER_DATA overidden by
   // command line flags. Maybe move the chrome PathProvider down here also?
   component_updater::RegisterPathProvider(chrome::DIR_COMPONENTS,
                                           chrome::DIR_INTERNAL_PLUGINS,
                                           chrome::DIR_USER_DATA);
-#endif
 
 #if !defined(OS_ANDROID) && !defined(OS_WIN)
   // Android does InitLogging when library is loaded. Skip here.
