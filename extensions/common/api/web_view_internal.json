@@ -185,6 +185,23 @@
     ],
     "functions": [
       {
+        "name": "allowCertificate",
+        "type": "function",
+        "description": "Allow Certificate in Webview.",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "instanceId",
+            "description": "The instance ID of the guest <webview> process."
+          },
+          {
+            "type": "boolean",
+            "name": "allow",
+            "description": "Allow certificate"
+          }
+        ]
+      },
+      {
         "name": "getAudioState",
         "type": "function",
         "description": "Callback that returns audio state.",
