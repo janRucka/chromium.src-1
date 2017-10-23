@@ -934,6 +934,21 @@ bool WebViewInternalAllowCertificateFunction::RunAsyncSafe(WebViewGuest* guest) 
     return true;
 }
 
+WebViewInternalShowCurrentCertificateDetailsFunction
+::WebViewInternalShowCurrentCertificateDetailsFunction() {
+}
+
+WebViewInternalShowCurrentCertificateDetailsFunction
+::~WebViewInternalShowCurrentCertificateDetailsFunction() {
+}
+
+bool WebViewInternalShowCurrentCertificateDetailsFunction
+::RunAsyncSafe(WebViewGuest* guest) {
+  guest->ShowCurrentCertificateDetails();
+
+  return true;
+}
+
 WebViewInternalSetAudioMutedFunction::WebViewInternalSetAudioMutedFunction() {}
 
 WebViewInternalSetAudioMutedFunction::~WebViewInternalSetAudioMutedFunction() {}

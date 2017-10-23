@@ -180,6 +180,7 @@ void SSLManager::OnCertificateError(std::unique_ptr<SSLErrorHandler> handler)
   certificateInfo->Append(std::unique_ptr<base::Value>(static_cast<base::Value*>(dict)));
 
   if (isMainFrame) {
+    webContents->GetController().GetActiveEntry()->GetSSL() = content::SSLStatus(handler->ssl_info());
     handler.release();
     webContents->OnCertificateError(std::move(certificateInfo));
     webContents->SetCertificateErrorCallback(base::Bind(static_cast<void (SSLManager::*)
