@@ -148,6 +148,9 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest> {
 
   ScriptExecutor* script_executor() { return script_executor_.get(); }
 
+  // Show current certificate details window.
+  void ShowCurrentCertificateDetails() const;
+
  private:
   friend class WebViewPermissionHelper;
 
