@@ -24,6 +24,11 @@ namespace blink {
 struct WebFindOptions;
 }  // namespace blink
 
+namespace content {
+class NavigationEntry;
+struct FaviconURL;
+}
+
 namespace extensions {
 
 class WebViewInternalFindFunction;
@@ -193,10 +198,10 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest> {
 
   // WebContentsDelegate implementation.
   bool DidAddMessageToConsole(content::WebContents* source,
-                              int32_t level,
-                              const base::string16& message,
-                              int32_t line_no,
-                              const base::string16& source_id) final;
+                           int32_t level,
+                           const base::string16& message,
+                           int32_t line_no,
+                           const base::string16& source_id) final;
   void CloseContents(content::WebContents* source) final;
   bool HandleContextMenu(const content::ContextMenuParams& params) final;
   void HandleKeyboardEvent(content::WebContents* source,
@@ -253,6 +258,10 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest> {
 
   void OnCertificateError(base::ListValue* certificate) final;
   void OnSubFrameCertificateError(base::ListValue* certificate) final;
+
+  void FaviconEvent(const std::string& faviconUrl);
+  void DidUpdateFaviconURL(const std::vector<content::FaviconURL>& candidates) final;
+  void TitleWasSet(content::NavigationEntry* entry) final;
 
   // WebContentsObserver implementation.
   void DidStartNavigation(content::NavigationHandle* navigation_handle) final;
