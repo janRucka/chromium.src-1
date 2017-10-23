@@ -143,8 +143,8 @@ class BrowserProcessImpl : public BrowserProcess,
 #endif
 
   net_log::ChromeNetLog* net_log() override;
-#if 0
   component_updater::ComponentUpdateService* component_updater() override;
+#if 0
   CRLSetFetcher* crl_set_fetcher() override;
   component_updater::PnaclComponentInstaller* pnacl_component_installer()
       override;
