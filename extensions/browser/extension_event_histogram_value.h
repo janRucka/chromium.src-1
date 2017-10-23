@@ -429,6 +429,8 @@ enum HistogramValue {
   LOCK_SCREEN_DATA_ON_DATA_ITEMS_AVAILABLE,
   WEB_VIEW_INTERNAL_ON_AUDIO_STATE_CHANGED,
   AUTOMATION_INTERNAL_ON_ACTION_RESULT,
+  WEB_VIEW_INTERNAL_ON_CERTIFICATE_ERROR,
+  WEB_VIEW_INTERNAL_ON_SUBFRAME_CERTIFICATE_ERROR,
   // Last entry: Add new entries above, then run:
   // python tools/metrics/histograms/update_extension_histograms.py
   ENUM_BOUNDARY

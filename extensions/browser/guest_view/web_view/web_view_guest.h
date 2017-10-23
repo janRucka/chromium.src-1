@@ -251,6 +251,9 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest> {
   void OnAudioStateChanged(bool audible) final;
   void VisibleSecurityStateChanged(content::WebContents* source) final;
 
+  void OnCertificateError(base::ListValue* certificate) final;
+  void OnSubFrameCertificateError(base::ListValue* certificate) final;
+
   // WebContentsObserver implementation.
   void DidStartNavigation(content::NavigationHandle* navigation_handle) final;
   void DidFinishNavigation(content::NavigationHandle* navigation_handle) final;

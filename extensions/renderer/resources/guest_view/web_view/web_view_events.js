@@ -80,6 +80,10 @@ WebViewEvents.EVENTS = {
     evt: CreateEvent('webViewInternal.onAudioStateChanged'),
     fields: ['audible']
   },
+  'certificateerror': {
+    evt: CreateEvent('webViewInternal.onCertificateError'),
+    fields: ['certificate']
+  },
   'close': {
     evt: CreateEvent('webViewInternal.onClose')
   },
@@ -190,6 +194,10 @@ WebViewEvents.EVENTS = {
   'sslchange': {
       evt: CreateEvent('webViewInternal.onSSLChange'),
       fields: ['certificate']
+  },
+  'subframecertificateerror': {
+    evt: CreateEvent('webViewInternal.onSubFrameCertificateError'),
+    fields: ['certificate']
   },
   'unresponsive': {
     evt: CreateEvent('webViewInternal.onUnresponsive'),
