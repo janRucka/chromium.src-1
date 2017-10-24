@@ -19,6 +19,8 @@
 #include "components/content_settings/core/common/content_settings_types.h"
 #include "content/public/browser/browser_thread.h"
 #include "content/public/browser/render_frame_host.h"
+#include "content/public/browser/web_contents.h"
+#include "content/public/browser/web_contents_delegate.h"
 #include "content/public/browser/web_contents_observer.h"
 #include "content/public/browser/web_contents_user_data.h"
 #include "url/gurl.h"
@@ -198,6 +200,13 @@ void NotificationPermissionContext::CancelPermissionRequest(
   }
 }
 
+void ExtensionDecision(const BrowserPermissionCallback& callback, bool allow) {
+  if (allow)
+    callback.Run(CONTENT_SETTING_ALLOW);
+  else
+    callback.Run(CONTENT_SETTING_BLOCK);
+}
+
 void NotificationPermissionContext::DecidePermission(
     content::WebContents* web_contents,
     const PermissionRequestID& id,
@@ -206,6 +215,17 @@ void NotificationPermissionContext::DecidePermission(
     bool user_gesture,
     const BrowserPermissionCallback& callback) {
   DCHECK_CURRENTLY_ON(content::BrowserThread::UI);
+
+  // just for extensions, should be enough for nwjs
+  if (web_contents && web_contents->GetDelegate()) {
+    web_contents->GetDelegate()->CanNotify(requesting_origin,
+      base::Bind(ExtensionDecision, 
+        base::Bind(&NotificationPermissionContext::NotifyPermissionSet,
+        weak_factory_ui_thread_.GetWeakPtr(), id,
+        requesting_origin, embedding_origin, callback,
+        true /* persist */)));
+    return;
+  }
 
   // Permission requests for either Web Notifications and Push Notifications may
   // only happen on top-level frames and same-origin iframes. Usage will

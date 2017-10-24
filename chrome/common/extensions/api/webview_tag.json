@@ -594,6 +594,25 @@
         ]
       },
       {
+        "id": "NotificationPermissionRequest",
+        "type": "object",
+        "description": "The type of <code>request</code> object which accompanies a <code>notification</code> <a href=\"#event-permissionrequest\">permissionrequest</a></code> DOM event.",
+        "properties": {
+          "requestMethod": {
+            "description": "The HTTP request type (e.g. <code>GET</code>) associated with the notification request.",
+            "type": "string"
+          },
+          "url": {
+            "description": "The requested notification URL.",
+            "type": "string"
+          }
+        },
+        "functions": [
+          { "name": "allow", "description": "Allow the permission request." },
+          { "name": "deny", "description": "Deny the permission request. This is the default behavior if <code>allow</code> is not called." }
+        ]
+      },
+      {
         "id": "FileSystemPermissionRequest",
         "type": "object",
         "description": "The type of <code>request</code> object which accompanies a <code>filesystem</code> <a href=\"#event-permissionrequest\">permissionrequest</a></code> DOM event.",
@@ -1465,7 +1484,7 @@
             "name": "request",
             "type": "object",
             "properties": {},
-            "description": "An object which holds details of the requested permission. Depending on the type of permission requested, this may be a $(ref:webviewTag.MediaPermissionRequest), $(ref:webviewTag.GeolocationPermissionRequest), $(ref:webviewTag.PointerLockPermissionRequest), $(ref:webviewTag.DownloadPermissionRequest), $(ref:webviewTag.LoadPluginPermissionRequest), or $(ref:webviewTag.FullscreenPermissionRequest)."
+            "description": "An object which holds details of the requested permission. Depending on the type of permission requested, this may be a $(ref:webviewTag.MediaPermissionRequest), $(ref:webviewTag.GeolocationPermissionRequest), $(ref:webviewTag.PointerLockPermissionRequest), $(ref:webviewTag.DownloadPermissionRequest), $(ref:webviewTag.NotificationPermissionRequest), $(ref:webviewTag.LoadPluginPermissionRequest), or $(ref:webviewTag.FullscreenPermissionRequest)."
           }
         ]
       },

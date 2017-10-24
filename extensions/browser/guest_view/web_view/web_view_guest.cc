@@ -1045,6 +1045,12 @@ void WebViewGuest::CanDownload(
   web_view_permission_helper_->CanDownload(url, request_method, callback);
 }
 
+void WebViewGuest::CanNotify(
+  const GURL& url,
+  const base::Callback<void(bool)>& callback) {
+  web_view_permission_helper_->CanNotify(url, callback);
+}
+
 void WebViewGuest::RequestPointerLockPermission(
     bool user_gesture,
     bool last_unlocked_by_target,

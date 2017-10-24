@@ -236,6 +236,11 @@ class CONTENT_EXPORT WebContentsDelegate {
                            const std::string& request_method,
                            const base::Callback<void(bool)>& callback);
 
+  // Asks the delegate if the given tab can notify.
+  // Invoking the |callback| synchronously is OK.
+  virtual void CanNotify(const GURL& url,
+                         const base::Callback<void(bool)>& callback);
+
   // Returns true if the context menu operation was handled by the delegate.
   virtual bool HandleContextMenu(const content::ContextMenuParams& params);
 

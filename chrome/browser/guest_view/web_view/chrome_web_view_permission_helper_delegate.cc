@@ -91,6 +91,27 @@ void ChromeWebViewPermissionHelperDelegate::OnOpenPDF(const GURL& url) {
   // Intentionally blank since guest views should never trigger PDF downloads.
 }
 
+void ChromeWebViewPermissionHelperDelegate::CanNotify(const GURL& url,
+  const base::Callback<void(bool)>& callback) {
+  base::DictionaryValue request_info;
+  request_info.SetString(guest_view::kUrl, url.spec());
+  web_view_permission_helper()->RequestPermission(
+    WEB_VIEW_PERMISSION_TYPE_NOTIFICATION,
+    request_info,
+    base::Bind(
+      &ChromeWebViewPermissionHelperDelegate::OnNotificationPermissionResponse,
+      weak_factory_.GetWeakPtr(),
+      callback),
+    false /* allowed_by_default */);
+}
+
+void ChromeWebViewPermissionHelperDelegate::OnNotificationPermissionResponse(
+  base::Callback<void(bool)> callback,
+  bool allow,
+  const std::string& user_input) {
+  callback.Run(allow && web_view_guest()->attached());
+}
+
 void ChromeWebViewPermissionHelperDelegate::CanDownload(
     const GURL& url,
     const std::string& request_method,
