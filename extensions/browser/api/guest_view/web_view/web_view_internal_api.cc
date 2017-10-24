@@ -949,6 +949,29 @@ bool WebViewInternalShowCurrentCertificateDetailsFunction
   return true;
 }
 
+WebViewInternalRestoreHistoryFunction::WebViewInternalRestoreHistoryFunction() {
+}
+
+WebViewInternalRestoreHistoryFunction::~WebViewInternalRestoreHistoryFunction() {
+}
+
+bool WebViewInternalRestoreHistoryFunction::RunAsyncSafe(WebViewGuest* guest) {
+
+  std::unique_ptr<web_view_internal::RestoreHistory::Params> params(
+    web_view_internal::RestoreHistory::Params::Create(*args_));
+  EXTENSION_FUNCTION_VALIDATE(params.get());
+
+  std::vector<std::pair<std::string, base::string16>> navigationEntries;
+
+  for (const extensions::api::web_view_internal::HistoryItem& item : params->navigation)
+    navigationEntries.push_back(std::make_pair(item.url, base::UTF8ToUTF16(item.title)));
+
+  guest->web_contents()->GetController().Restore(params->selected_navigation, navigationEntries);
+  guest->web_contents()->GetController().Reload(content::ReloadType::NONE, false);
+
+  return true;
+}
+
 WebViewInternalSetAudioMutedFunction::WebViewInternalSetAudioMutedFunction() {}
 
 WebViewInternalSetAudioMutedFunction::~WebViewInternalSetAudioMutedFunction() {}

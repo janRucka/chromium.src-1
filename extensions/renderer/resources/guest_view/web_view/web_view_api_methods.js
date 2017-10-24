@@ -104,6 +104,9 @@ var WEB_VIEW_API_METHODS = [
   // Reloads the current top-level page.
   'reload',
 
+  // Restore navigation history and load selected navigation.
+  'restoreHistory',
+
   // Set audio mute.
   'setAudioMuted',
 
