@@ -48,6 +48,7 @@
 #include "content/public/common/content_client.h"
 #include "content/public/common/content_switches.h"
 #include "content/public/common/drop_data.h"
+#include "content/nw/src/browser/nw_chrome_browser_hooks.h"
 #include "net/base/filename_util.h"
 #include "third_party/WebKit/public/platform/WebInputEvent.h"
 #include "ui/aura/client/aura_constants.h"
@@ -1170,6 +1171,17 @@ void WebContentsViewAura::OnMouseEvent(ui::MouseEvent* event) {
     web_contents_->GetDelegate()->ActivateContents(web_contents_);
 #endif
   }
+
+#if defined(OS_WIN)
+#if !defined(COMPONENT_BUILD)
+  if (event->native_event().message == 523) { // WM_XBUTTONDOWN
+    if (event->native_event().wParam == 65568) // backward
+      nw::OnMouseButtonFwdBwd(false);
+    else if (event->native_event().wParam == 131136) // forward
+      nw::OnMouseButtonFwdBwd(true);
+  }
+#endif
+#endif
 
   web_contents_->GetDelegate()->ContentsMouseEvent(
       web_contents_, type == ui::ET_MOUSE_MOVED, type == ui::ET_MOUSE_EXITED);
