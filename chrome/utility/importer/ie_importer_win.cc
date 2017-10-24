@@ -51,7 +51,7 @@ const base::char16 kSearchScopePath[] =
     L"Software\\Microsoft\\Internet Explorer\\SearchScopes";
 
 // NTFS stream name of favicon image data.
-const base::char16 kFaviconStreamName[] = L":favicon:$DATA";
+//const base::char16 kFaviconStreamName[] = L":favicon:$DATA";
 
 // A struct that hosts the information of AutoComplete data in PStore.
 struct AutoCompleteInfo {
@@ -308,100 +308,100 @@ GURL ReadURLFromInternetShortcut(IUniformResourceLocator* url_locator) {
 }
 
 // Reads the URL of the favicon of the internet shortcut.
-GURL ReadFaviconURLFromInternetShortcut(IUniformResourceLocator* url_locator) {
-  Microsoft::WRL::ComPtr<IPropertySetStorage> property_set_storage;
-  if (FAILED(url_locator->QueryInterface(IID_PPV_ARGS(&property_set_storage))))
-    return GURL();
-
-  Microsoft::WRL::ComPtr<IPropertyStorage> property_storage;
-  if (FAILED(property_set_storage->Open(FMTID_Intshcut, STGM_READ,
-                                        property_storage.GetAddressOf()))) {
-    return GURL();
-  }
-
-  PROPSPEC properties[] = {{PRSPEC_PROPID, {PID_IS_ICONFILE}}};
-  // ReadMultiple takes a non-const array of PROPVARIANTs, but since this code
-  // only needs an array of size 1: a non-const pointer to |output| is
-  // equivalent.
-  base::win::ScopedPropVariant output;
-  // ReadMultiple can return S_FALSE (FAILED(S_FALSE) is false) when the
-  // property is not found, in which case output[0].vt is set to VT_EMPTY.
-  if (FAILED(property_storage->ReadMultiple(1, properties, output.Receive())) ||
-      output.get().vt != VT_LPWSTR)
-    return GURL();
-  return GURL(output.get().pwszVal);
-}
+//GURL ReadFaviconURLFromInternetShortcut(IUniformResourceLocator* url_locator) {
+//  Microsoft::WRL::ComPtr<IPropertySetStorage> property_set_storage;
+//  if (FAILED(url_locator->QueryInterface(IID_PPV_ARGS(&property_set_storage))))
+//    return GURL();
+//
+//  Microsoft::WRL::ComPtr<IPropertyStorage> property_storage;
+//  if (FAILED(property_set_storage->Open(FMTID_Intshcut, STGM_READ,
+//                                        property_storage.GetAddressOf()))) {
+//    return GURL();
+//  }
+//
+//  PROPSPEC properties[] = {{PRSPEC_PROPID, {PID_IS_ICONFILE}}};
+//  // ReadMultiple takes a non-const array of PROPVARIANTs, but since this code
+//  // only needs an array of size 1: a non-const pointer to |output| is
+//  // equivalent.
+//  base::win::ScopedPropVariant output;
+//  // ReadMultiple can return S_FALSE (FAILED(S_FALSE) is false) when the
+//  // property is not found, in which case output[0].vt is set to VT_EMPTY.
+//  if (FAILED(property_storage->ReadMultiple(1, properties, output.Receive())) ||
+//      output.get().vt != VT_LPWSTR)
+//    return GURL();
+//  return GURL(output.get().pwszVal);
+//}
 
 // Reads the favicon imaga data in an NTFS alternate data stream. This is where
 // IE7 and above store the data.
-bool ReadFaviconDataFromInternetShortcut(const base::string16& file,
-                                         std::string* data) {
-  return base::ReadFileToString(base::FilePath(file + kFaviconStreamName),
-                                data);
-}
+//bool ReadFaviconDataFromInternetShortcut(const base::string16& file,
+//                                         std::string* data) {
+//  return base::ReadFileToString(base::FilePath(file + kFaviconStreamName),
+//                                data);
+//}
 
 // Reads the favicon imaga data in the Internet cache. IE6 doesn't hold the data
 // explicitly, but it might be found in the cache.
-bool ReadFaviconDataFromCache(const GURL& favicon_url, std::string* data) {
-  std::wstring url_wstring(base::UTF8ToWide(favicon_url.spec()));
-  DWORD info_size = 0;
-  GetUrlCacheEntryInfoEx(url_wstring.c_str(), NULL, &info_size, NULL, NULL,
-                         NULL, 0);
-  if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
-    return false;
-
-  std::vector<char> buf(info_size);
-  INTERNET_CACHE_ENTRY_INFO* cache =
-      reinterpret_cast<INTERNET_CACHE_ENTRY_INFO*>(&buf[0]);
-  if (!GetUrlCacheEntryInfoEx(url_wstring.c_str(), cache, &info_size, NULL,
-                              NULL, NULL, 0)) {
-    return false;
-  }
-  return base::ReadFileToString(base::FilePath(cache->lpszLocalFileName), data);
-}
+//bool ReadFaviconDataFromCache(const GURL& favicon_url, std::string* data) {
+//  std::wstring url_wstring(base::UTF8ToWide(favicon_url.spec()));
+//  DWORD info_size = 0;
+//  GetUrlCacheEntryInfoEx(url_wstring.c_str(), NULL, &info_size, NULL, NULL,
+//                         NULL, 0);
+//  if (GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+//    return false;
+//
+//  std::vector<char> buf(info_size);
+//  INTERNET_CACHE_ENTRY_INFO* cache =
+//      reinterpret_cast<INTERNET_CACHE_ENTRY_INFO*>(&buf[0]);
+//  if (!GetUrlCacheEntryInfoEx(url_wstring.c_str(), cache, &info_size, NULL,
+//                              NULL, NULL, 0)) {
+//    return false;
+//  }
+//  return base::ReadFileToString(base::FilePath(cache->lpszLocalFileName), data);
+//}
 
 // Reads the binary image data of favicon of an internet shortcut file |file|.
 // |favicon_url| read by ReadFaviconURLFromInternetShortcut is also needed to
 // examine the IE cache.
-bool ReadReencodedFaviconData(const base::string16& file,
-                              const GURL& favicon_url,
-                              std::vector<unsigned char>* data) {
-  std::string image_data;
-  if (!ReadFaviconDataFromInternetShortcut(file, &image_data) &&
-      !ReadFaviconDataFromCache(favicon_url, &image_data)) {
-    return false;
-  }
-
-  const unsigned char* ptr =
-      reinterpret_cast<const unsigned char*>(image_data.c_str());
-  return importer::ReencodeFavicon(ptr, image_data.size(), data);
-}
+//bool ReadReencodedFaviconData(const base::string16& file,
+//                              const GURL& favicon_url,
+//                              std::vector<unsigned char>* data) {
+//  std::string image_data;
+//  if (!ReadFaviconDataFromInternetShortcut(file, &image_data) &&
+//      !ReadFaviconDataFromCache(favicon_url, &image_data)) {
+//    return false;
+//  }
+//
+//  const unsigned char* ptr =
+//      reinterpret_cast<const unsigned char*>(image_data.c_str());
+//  return importer::ReencodeFavicon(ptr, image_data.size(), data);
+//}
 
 // Loads favicon image data and registers to |favicon_map|.
-void UpdateFaviconMap(
-    const base::string16& url_file,
-    const GURL& url,
-    IUniformResourceLocator* url_locator,
-    std::map<GURL, favicon_base::FaviconUsageData>* favicon_map) {
-  GURL favicon_url = ReadFaviconURLFromInternetShortcut(url_locator);
-  if (!favicon_url.is_valid())
-    return;
-
-  std::map<GURL, favicon_base::FaviconUsageData>::iterator it =
-      favicon_map->find(favicon_url);
-  if (it != favicon_map->end()) {
-    // Known favicon URL.
-    it->second.urls.insert(url);
-  } else {
-    // New favicon URL. Read the image data and store.
-    favicon_base::FaviconUsageData usage;
-    if (ReadReencodedFaviconData(url_file, favicon_url, &usage.png_data)) {
-      usage.favicon_url = favicon_url;
-      usage.urls.insert(url);
-      favicon_map->insert(std::make_pair(favicon_url, usage));
-    }
-  }
-}
+//void UpdateFaviconMap(
+//    const base::string16& url_file,
+//    const GURL& url,
+//    IUniformResourceLocator* url_locator,
+//    std::map<GURL, favicon_base::FaviconUsageData>* favicon_map) {
+//  GURL favicon_url = ReadFaviconURLFromInternetShortcut(url_locator);
+//  if (!favicon_url.is_valid())
+//    return;
+//
+//  std::map<GURL, favicon_base::FaviconUsageData>::iterator it =
+//      favicon_map->find(favicon_url);
+//  if (it != favicon_map->end()) {
+//    // Known favicon URL.
+//    it->second.urls.insert(url);
+//  } else {
+//    // New favicon URL. Read the image data and store.
+//    favicon_base::FaviconUsageData usage;
+//    if (ReadReencodedFaviconData(url_file, favicon_url, &usage.png_data)) {
+//      usage.favicon_url = favicon_url;
+//      usage.urls.insert(url);
+//      favicon_map->insert(std::make_pair(favicon_url, usage));
+//    }
+//  }
+//}
 
 }  // namespace
 
@@ -699,7 +699,7 @@ void IEImporter::ParseFavoritesFolder(
     if (url.host() == "go.microsoft.com")
       continue;
     // Read favicon.
-    UpdateFaviconMap(*it, url, url_locator.Get(), &favicon_map);
+//    UpdateFaviconMap(*it, url, url_locator.Get(), &favicon_map);
 
     // Make the relative path from the Favorites folder, without the basename.
     // ex. Suppose that the Favorites folder is C:\Users\Foo\Favorites.
