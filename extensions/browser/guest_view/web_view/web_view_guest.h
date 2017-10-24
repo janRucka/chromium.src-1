@@ -268,6 +268,8 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest> {
   void DidUpdateFaviconURL(const std::vector<content::FaviconURL>& candidates) final;
   void TitleWasSet(content::NavigationEntry* entry) final;
 
+  void OnUpdateTargetURL(const GURL& url) final;
+
   // WebContentsObserver implementation.
   void DidStartNavigation(content::NavigationHandle* navigation_handle) final;
   void DidFinishNavigation(content::NavigationHandle* navigation_handle) final;

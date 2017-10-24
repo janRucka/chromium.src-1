@@ -203,6 +203,10 @@ WebViewEvents.EVENTS = {
     evt: CreateEvent('webViewInternal.onSubFrameCertificateError'),
     fields: ['certificate']
   },
+  'targeturlupdate': {
+      evt: CreateEvent('webViewInternal.onTargetUrlUpdate'),
+      fields: ['targetUrl']
+  },
   'titlechange': {
       evt: CreateEvent('webViewInternal.onTitleChange'),
       fields: ['title']
