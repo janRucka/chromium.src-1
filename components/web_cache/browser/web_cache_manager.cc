@@ -333,6 +333,9 @@ void WebCacheManager::ClearRendererCache(
       // Find the WebCachePtr by renderer process id.
       auto it = web_cache_services_.find(*iter);
       DCHECK(it != web_cache_services_.end());
+      // hotfix of occasional crash - check if cache is deleted properly
+      if (it == web_cache_services_.end())
+        continue;
       const mojom::WebCachePtr& service = it->second;
       DCHECK(service);
       service->ClearCache(occasion == ON_NAVIGATION);
