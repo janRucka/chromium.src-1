@@ -50,6 +50,8 @@ static std::string PermissionTypeToString(WebViewPermissionType type) {
       return webview::kPermissionTypeNewWindow;
     case WEB_VIEW_PERMISSION_TYPE_POINTER_LOCK:
       return webview::kPermissionTypePointerLock;
+    case WEB_VIEW_PERMISSION_TYPE_NOTIFICATION:
+      return webview::kPermissionTypeNotification;
     default:
       NOTREACHED();
       return std::string();
@@ -255,6 +257,12 @@ void WebViewPermissionHelper::CanDownload(
     const base::Callback<void(bool)>& callback) {
   web_view_permission_helper_delegate_->CanDownload(url, request_method,
                                                     callback);
+}
+
+void WebViewPermissionHelper::CanNotify(
+    const GURL& url,
+    const base::Callback<void(bool)>& callback) {
+  web_view_permission_helper_delegate_->CanNotify(url, callback);
 }
 
 void WebViewPermissionHelper::RequestPointerLockPermission(

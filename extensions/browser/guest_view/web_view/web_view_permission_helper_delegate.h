@@ -26,6 +26,10 @@ class WebViewPermissionHelperDelegate : public content::WebContentsObserver {
       const std::string& request_method,
       const base::Callback<void(bool)>& callback) {}
 
+  virtual void CanNotify(
+      const GURL& url,
+      const base::Callback<void(bool)>& callback) {}
+
   virtual void RequestPointerLockPermission(
       bool user_gesture,
       bool last_unlocked_by_target,

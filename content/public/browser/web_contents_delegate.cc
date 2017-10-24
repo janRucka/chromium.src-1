@@ -83,6 +83,12 @@ void WebContentsDelegate::CanDownload(
   callback.Run(true);
 }
 
+void WebContentsDelegate::CanNotify(
+    const GURL& url,
+    const base::Callback<void(bool)>& callback) {
+  callback.Run(true);
+}
+
 bool WebContentsDelegate::HandleContextMenu(
     const content::ContextMenuParams& params) {
   return false;
