@@ -13,6 +13,21 @@
     },
     "types": [
       {
+        "id": "HistoryItem",
+        "type": "object",
+        "description": "History item",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Url"
+          },
+          "title": {
+            "type": "string",
+            "description": "Url title"
+          }
+        }
+      },
+      {
         "id": "ClearDataOptions",
         "type": "object",
         "description": "Options that determine what data should be cleared by <code>clearData</code>.",
@@ -677,6 +692,27 @@
       }
     ],
     "functions": [
+      {
+        "name": "restoreHistory",
+        "type": "function",
+        "description": "Restore navigation history and load selected navigation.",
+        "parameters": [
+          {
+            "type": "integer",
+            "name": "selectedNavigation",
+            "description": "Selected navigation (zero indexed)."
+          },
+          {
+            "name": "navigation",
+            "type": "array",
+            "items": { 
+               "$ref": "HistoryItem",
+               "name": "historyItem" 
+            },
+            "description": "Urls and titles."
+          }
+        ]
+      },
       {
         "name": "showCurrentCertificateDetails",
         "type": "function",
