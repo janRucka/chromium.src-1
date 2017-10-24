@@ -230,6 +230,8 @@ class WebViewGuest : public guest_view::GuestView<WebViewGuest> {
   void CanDownload(const GURL& url,
                    const std::string& request_method,
                    const base::Callback<void(bool)>& callback) final;
+  void CanNotify(const GURL& url,
+                 const base::Callback<void(bool)>& callback) final;
   content::JavaScriptDialogManager* GetJavaScriptDialogManager(
       content::WebContents* source) final;
   void AddNewContents(content::WebContents* source,
