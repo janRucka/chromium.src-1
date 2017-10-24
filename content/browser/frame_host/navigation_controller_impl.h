@@ -45,6 +45,9 @@ class CONTENT_EXPORT NavigationControllerImpl : public NavigationController {
   void Restore(int selected_navigation,
                RestoreType type,
                std::vector<std::unique_ptr<NavigationEntry>>* entries) override;
+  void Restore(
+    int selected_navigation,
+    std::vector<std::pair<std::string, base::string16>>& entries) override;
   NavigationEntryImpl* GetActiveEntry() const override;
   NavigationEntryImpl* GetVisibleEntry() const override;
   int GetCurrentEntryIndex() const override;
