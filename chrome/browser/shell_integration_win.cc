@@ -569,6 +569,22 @@ bool SetAsDefaultProtocolClient(const std::string& protocol) {
   return true;
 }
 
+bool Register(base::Callback<void(bool)> callback)
+{
+  base::FilePath chrome_exe;
+  if (!PathService::Get(base::FILE_EXE, &chrome_exe)) {
+    LOG(ERROR) << "Error getting app exe path";
+    callback.Run(false);
+    return false;
+  }
+
+  BrowserDistribution* dist = BrowserDistribution::GetDistribution();
+  bool retVal = ShellUtil::RegisterChromeBrowser(dist, chrome_exe, base::string16(), true);
+
+  callback.Run(retVal);
+  return retVal;
+}
+
 DefaultWebClientSetPermission GetDefaultWebClientSetPermission() {
   if (!install_static::SupportsSetAsDefaultBrowser())
     return SET_DEFAULT_NOT_ALLOWED;
