@@ -16,6 +16,8 @@ class ZoomObserver {
   virtual void OnZoomChanged(const ZoomController::ZoomChangedEventData& data) {
   }
 
+  virtual bool IsWebViewGuest() const { return false; }
+
  protected:
   virtual ~ZoomObserver() {}
 };
