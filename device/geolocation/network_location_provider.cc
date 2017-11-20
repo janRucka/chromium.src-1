@@ -140,13 +140,11 @@ bool NetworkLocationProvider::PositionCache::CachePosition(
   const WifiData& wifi_data,
   const Geoposition& position) {
   for (const auto& access_point_data : wifi_data.access_point_data) {
-    std::pair<std::map<base::string16, Geoposition>::iterator, bool> result = 
-      cache_.insert(make_pair(access_point_data.mac_address, position));
+    cache_.insert(make_pair(access_point_data.mac_address, position));
   }
 
   if (wifi_data.access_point_data.size() == 0) {
-    std::pair<std::map<base::string16, Geoposition>::iterator, bool> result =
-      cache_.insert(make_pair(base::UTF8ToUTF16(GetIpForCache()), position));
+    cache_.insert(make_pair(base::UTF8ToUTF16(GetIpForCache()), position));
   }
   CacheChecker();
   return true;
