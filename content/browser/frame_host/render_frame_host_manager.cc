@@ -133,7 +133,7 @@ WebUIImpl* RenderFrameHostManager::GetNavigatingWebUI() const {
 }
 
 RenderWidgetHostView* RenderFrameHostManager::GetRenderWidgetHostView() const {
-  if (delegate_->GetInterstitialForRenderManager())
+  if (delegate_ && delegate_->GetInterstitialForRenderManager())
     return delegate_->GetInterstitialForRenderManager()->GetView();
   if (render_frame_host_)
     return render_frame_host_->GetView();
