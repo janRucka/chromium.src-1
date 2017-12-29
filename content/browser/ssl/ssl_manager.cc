@@ -534,8 +534,7 @@ void SSLManager::OnCertErrorInternal(std::unique_ptr<SSLErrorHandler> handler,
   GetContentClient()->browser()->AllowCertificateError(
       web_contents, cert_error, ssl_info, request_url, resource_type,
       overridable, strict_enforcement, expired_previous_decision,
-      base::Bind(&content::OnAllowCertificate, base::Owned(handler.release()),
-                 ssl_host_state_delegate_, true));
+      base::Bind(callback, true));
 }
 
 bool SSLManager::UpdateEntry(NavigationEntryImpl* entry,
