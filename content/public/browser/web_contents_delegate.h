@@ -548,6 +548,12 @@ class CONTENT_EXPORT WebContentsDelegate {
   virtual void OnDidBlockFramebust(content::WebContents* web_contents,
                                    const GURL& url) {}
 
+  // Called when CertificateError occurs
+  virtual void OnCertificateError(base::ListValue* certificate) {}
+
+  // Called when CertificateError in sub-frame occurs
+  virtual void OnSubFrameCertificateError(base::ListValue* certificate) {}
+
   // Reports that passive mixed content was found at the specified url.
   virtual void PassiveInsecureContentFound(const GURL& resource_url) {}
 
