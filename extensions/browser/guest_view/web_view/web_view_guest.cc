@@ -838,6 +838,8 @@ WebViewGuest::~WebViewGuest() {
 
 void WebViewGuest::DidFinishNavigation(
     content::NavigationHandle* navigation_handle) {
+  bool errorPage = false;
+
   if (navigation_handle->IsErrorPage() || !navigation_handle->HasCommitted()) {
     // Suppress loadabort for "mailto" URLs.
     // Also during destruction, owner_web_contents() is null so there's no point
@@ -853,10 +855,14 @@ void WebViewGuest::DidFinishNavigation(
       LoadAbort(navigation_handle->IsInMainFrame(), navigation_handle->GetURL(),
                 error_code);
     }
-    return;
+
+    if (!navigation_handle->HasCommitted())
+      return;
+
+    errorPage = true;
   }
 
-  if (navigation_handle->IsInMainFrame()) {
+  if (!errorPage && navigation_handle->IsInMainFrame()) {
     // For LoadDataWithBaseURL loads, |url| contains the data URL, but the
     // virtual URL is needed in that case. So use WebContents::GetURL instead.
     src_ = web_contents()->GetURL();
@@ -890,7 +896,8 @@ void WebViewGuest::DidFinishNavigation(
   DispatchEventToView(std::make_unique<GuestViewEvent>(
       webview::kEventLoadCommit, std::move(args)));
 
-  find_helper_.CancelAllFindSessions();
+  if (!errorPage)
+    find_helper_.CancelAllFindSessions();
 }
 
 void WebViewGuest::DocumentOnLoadCompletedInMainFrame() {
