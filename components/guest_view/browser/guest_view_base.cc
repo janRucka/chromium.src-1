@@ -469,6 +469,15 @@ void GuestViewBase::Destroy(bool also_delete) {
   // StopTrackingEmbedderZoomLevel(), but before the rest of
   // the statements in this function.
   StopTrackingEmbedderZoomLevel();
+
+  // Hot-fix of occasional crash related to zoom
+  // TODO check why observer is not removed.
+  auto* embedder_zoom_controller =
+    zoom::ZoomController::FromWebContents(owner_web_contents());
+  // Chrome Apps do not have a ZoomController.
+  if (embedder_zoom_controller)
+    embedder_zoom_controller->RemoveObserver(this);
+
   owner_web_contents_ = nullptr;
 
   element_instance_id_ = kInstanceIDNone;
