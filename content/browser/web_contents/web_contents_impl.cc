@@ -2015,9 +2015,10 @@ bool WebContentsImpl::HandleWheelEvent(
     zoom_scroll_remainder_ += event.wheel_ticks_y;
     int whole_zoom_scroll_remainder_ = std::lround(zoom_scroll_remainder_);
     zoom_scroll_remainder_ -= whole_zoom_scroll_remainder_;
-    if (whole_zoom_scroll_remainder_ != 0) {
-      delegate_->ContentsZoomChange(whole_zoom_scroll_remainder_ > 0);
-    }
+    // we handle zoom in javascript
+    //if (whole_zoom_scroll_remainder_ != 0) {
+    //  delegate_->ContentsZoomChange(whole_zoom_scroll_remainder_ > 0);
+    //}
     return true;
   }
 #endif
