@@ -7,54 +7,145 @@
 #include <utility>
 
 #include "base/bind.h"
+#include "base/files/file_util.h"
+#include "base/json/json_file_value_serializer.h"
 #include "base/location.h"
 #include "base/single_thread_task_runner.h"
 #include "base/strings/utf_string_conversions.h"
+#include "base/threading/thread_restrictions.h"
 #include "base/threading/thread_task_runner_handle.h"
-#include "base/time/time.h"
+#include "base/values.h"
+#include "chrome/common/chrome_paths_internal.h"
 #include "net/url_request/url_request_context_getter.h"
+#include "net/base/network_interfaces.h"
 
 namespace device {
 namespace {
 // The maximum period of time we'll wait for a complete set of wifi data
 // before sending the request.
 const int kDataCompleteWaitSeconds = 2;
+
+std::string GetIpForCache() {
+  net::NetworkInterfaceList networks;
+  net::GetNetworkList(&networks, net::INCLUDE_HOST_SCOPE_VIRTUAL_INTERFACES);
+
+  std::string ip;
+  for (const net::NetworkInterface& network : networks)
+    ip += network.address.ToString();
+
+  return ip;
+}
+
 }  // namespace
 
 // static
-const size_t NetworkLocationProvider::PositionCache::kMaximumSize = 10;
+const size_t NetworkLocationProvider::PositionCache::kMaximumSize = 200;
+const base::TimeDelta NetworkLocationProvider::PositionCache::kCacheExpiration = base::TimeDelta::FromDays(7);
 
-NetworkLocationProvider::PositionCache::PositionCache() {}
+NetworkLocationProvider::PositionCache::PositionCache() {
+  base::ThreadRestrictions::SetIOAllowed(true);
+#if !defined(COMPONENT_BUILD)
+  base::FilePath path;
+  if (chrome::GetDefaultUserDataDirectory(&path)) {
+    path = path.AppendASCII(L"geolocationCache");
+    if (base::PathExists(path)) {
+      std::string error;
+      JSONFileValueDeserializer serializer(path);
+      std::unique_ptr<base::Value> root(serializer.Deserialize(NULL, &error));
+      if (!root.get())
+        return;
 
-NetworkLocationProvider::PositionCache::~PositionCache() {}
+      std::unique_ptr<base::ListValue> geolocations = base::ListValue::From(std::move(root));
+      if (!geolocations)
+        return;
+
+      for (size_t i = 0; i < geolocations->GetSize(); i++) {
+        base::DictionaryValue* geolocation = nullptr;
+        geolocations->GetDictionary(i, &geolocation);
+        if (!geolocation)
+          continue;
+
+        Geoposition geo;
+        base::string16 macAddress;
+        if (!geolocation->GetString("macAddress", &macAddress) 
+         || !geolocation->GetDouble("latitude", &geo.latitude)
+         || !geolocation->GetDouble("longitude", &geo.longitude)
+         || !geolocation->GetDouble("altitude", &geo.altitude)
+         || !geolocation->GetDouble("accuracy", &geo.accuracy)
+         || !geolocation->GetDouble("altitude_accuracy", &geo.altitude_accuracy)
+         || !geolocation->GetDouble("heading", &geo.heading)
+         || !geolocation->GetDouble("speed", &geo.speed))
+          continue;
+
+        double time;
+        if (!geolocation->GetDouble("time", &time))
+          continue;
+        geo.timestamp = base::Time::FromDoubleT(time);
+
+        cache_.insert(std::make_pair(macAddress, geo));
+      }
+      CacheChecker();
+    }
+  }
+#endif
+}
+
+NetworkLocationProvider::PositionCache::~PositionCache() {
+  base::ThreadRestrictions::SetIOAllowed(true);
+#if !defined(COMPONENT_BUILD)
+  base::FilePath path;
+  if (chrome::GetDefaultUserDataDirectory(&path)) {
+    std::unique_ptr<base::ListValue> geolocations(new base::ListValue());
+    for (const std::pair<base::string16, Geoposition>& cache : cache_) {
+      base::DictionaryValue* dict = new base::DictionaryValue;
+      dict->SetString("macAddress", cache.first);
+      dict->SetDouble("latitude", cache.second.latitude);
+      dict->SetDouble("longitude", cache.second.longitude);
+      dict->SetDouble("altitude", cache.second.altitude);
+      dict->SetDouble("accuracy", cache.second.accuracy);
+      dict->SetDouble("altitude_accuracy", cache.second.altitude_accuracy);
+      dict->SetDouble("heading", cache.second.heading);
+      dict->SetDouble("speed", cache.second.speed);
+      dict->SetDouble("time", cache.second.timestamp.ToDoubleT());
+      geolocations->Append(std::unique_ptr<base::Value>(static_cast<base::Value*>(dict)));
+    }
+
+    JSONFileValueSerializer serializer(path.AppendASCII(L"geolocationCache"));
+    serializer.Serialize(*geolocations);
+  }
+#endif
+}
+
+void NetworkLocationProvider::PositionCache::CacheChecker() {
+  for (std::map<base::string16, Geoposition>::iterator it = cache_.begin(); it != cache_.end();) {
+    if (it->second.timestamp < base::Time::Now() - kCacheExpiration)
+      cache_.erase(it++);
+    else
+      ++it;
+  }
+
+  if (cache_.size() == kMaximumSize) {
+    std::map<base::string16, Geoposition>::const_iterator oldest = cache_.begin();
+    for (std::map<base::string16, Geoposition>::const_iterator it = 
+        std::next(cache_.begin(), 1); 
+        it != cache_.end(); ++it) {
+      if (oldest->second.timestamp > it->second.timestamp)
+        oldest = it;
+    }
+    cache_.erase(oldest);
+  }
+}
 
 bool NetworkLocationProvider::PositionCache::CachePosition(
-    const WifiData& wifi_data,
-    const Geoposition& position) {
-  // Check that we can generate a valid key for the wifi data.
-  base::string16 key;
-  if (!MakeKey(wifi_data, &key)) {
-    return false;
-  }
-  // If the cache is full, remove the oldest entry.
-  if (cache_.size() == kMaximumSize) {
-    DCHECK(cache_age_list_.size() == kMaximumSize);
-    CacheAgeList::iterator oldest_entry = cache_age_list_.begin();
-    DCHECK(oldest_entry != cache_age_list_.end());
-    cache_.erase(*oldest_entry);
-    cache_age_list_.erase(oldest_entry);
-  }
-  DCHECK_LT(cache_.size(), kMaximumSize);
-  // Insert the position into the cache.
-  std::pair<CacheMap::iterator, bool> result =
-      cache_.insert(std::make_pair(key, position));
-  if (!result.second) {
-    NOTREACHED();  // We never try to add the same key twice.
-    CHECK_EQ(cache_.size(), cache_age_list_.size());
-    return false;
-  }
-  cache_age_list_.push_back(result.first);
-  DCHECK_EQ(cache_.size(), cache_age_list_.size());
+  const WifiData& wifi_data,
+  const Geoposition& position) {
+  for (const auto& access_point_data : wifi_data.access_point_data)
+      cache_.insert(make_pair(access_point_data.mac_address, position));
+
+  if (wifi_data.access_point_data.size() == 0)
+      cache_.insert(make_pair(base::UTF8ToUTF16(GetIpForCache()), position));
+
+  CacheChecker();
   return true;
 }
 
@@ -62,34 +153,21 @@ bool NetworkLocationProvider::PositionCache::CachePosition(
 // the cached position if available, nullptr otherwise.
 const Geoposition* NetworkLocationProvider::PositionCache::FindPosition(
     const WifiData& wifi_data) {
-  base::string16 key;
-  if (!MakeKey(wifi_data, &key)) {
-    return nullptr;
-  }
-  CacheMap::const_iterator iter = cache_.find(key);
-  return iter == cache_.end() ? nullptr : &iter->second;
-}
 
-// Makes the key for the map of cached positions, using the available data.
-// Returns true if a good key was generated, false otherwise.
-//
-// static
-bool NetworkLocationProvider::PositionCache::MakeKey(const WifiData& wifi_data,
-                                                     base::string16* key) {
-  // Currently we use only WiFi data and base the key only on the MAC addresses.
-  DCHECK(key);
-  key->clear();
-  const size_t kCharsPerMacAddress = 6 * 3 + 1;  // e.g. "11:22:33:44:55:66|"
-  key->reserve(wifi_data.access_point_data.size() * kCharsPerMacAddress);
-  const base::string16 separator(base::ASCIIToUTF16("|"));
+  CacheChecker();
   for (const auto& access_point_data : wifi_data.access_point_data) {
-    *key += separator;
-    *key += access_point_data.mac_address;
-    *key += separator;
+    std::map<base::string16, Geoposition>::const_iterator it = cache_.find(access_point_data.mac_address);
+    if (it != cache_.end())
+      return &it->second;
   }
-  // If the key is the empty string, return false, as we don't want to cache a
-  // position for such data.
-  return !key->empty();
+
+  if (wifi_data.access_point_data.size() == 0) {
+    std::map<base::string16, Geoposition>::const_iterator it = cache_.find(base::UTF8ToUTF16(GetIpForCache()));
+    if (it != cache_.end())
+      return &it->second;
+  }
+
+  return nullptr;
 }
 
 // NetworkLocationProvider

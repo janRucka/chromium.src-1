@@ -15,6 +15,7 @@
 #include "base/memory/ref_counted.h"
 #include "base/memory/weak_ptr.h"
 #include "base/strings/string16.h"
+#include "base/time/time.h"
 #include "base/threading/thread.h"
 #include "base/threading/thread_checker.h"
 #include "device/geolocation/geolocation_export.h"
@@ -32,6 +33,7 @@ class NetworkLocationProvider : public LocationProvider {
    public:
     // The maximum size of the cache of positions.
     static const size_t kMaximumSize;
+    static const base::TimeDelta kCacheExpiration;
 
     PositionCache();
     ~PositionCache();
@@ -48,17 +50,12 @@ class NetworkLocationProvider : public LocationProvider {
     const Geoposition* FindPosition(const WifiData& wifi_data);
 
    private:
-    // Makes the key for the map of cached positions, using a set of
-    // data. Returns true if a good key was generated, false otherwise.
-    static bool MakeKey(const WifiData& wifi_data, base::string16* key);
+    // Check whether cache is full or has outdated entries
+    void CacheChecker();
 
     // The cache of positions. This is stored as a map keyed on a string that
-    // represents a set of data, and a list to provide
-    // least-recently-added eviction.
-    typedef std::map<base::string16, Geoposition> CacheMap;
-    CacheMap cache_;
-    typedef std::list<CacheMap::iterator> CacheAgeList;
-    CacheAgeList cache_age_list_;  // Oldest first.
+    // represents a set of data
+    std::map<base::string16, Geoposition> cache_;
   };
 
   DEVICE_GEOLOCATION_EXPORT NetworkLocationProvider(
