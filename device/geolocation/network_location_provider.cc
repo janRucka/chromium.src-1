@@ -47,7 +47,7 @@ NetworkLocationProvider::PositionCache::PositionCache() {
 #if !defined(COMPONENT_BUILD)
   base::FilePath path;
   if (chrome::GetDefaultUserDataDirectory(&path)) {
-    path = path.AppendASCII(L"geolocationCache");
+    path = path.AppendASCII("geolocationCache");
     if (base::PathExists(path)) {
       std::string error;
       JSONFileValueDeserializer serializer(path);
@@ -110,7 +110,7 @@ NetworkLocationProvider::PositionCache::~PositionCache() {
       geolocations->Append(std::unique_ptr<base::Value>(static_cast<base::Value*>(dict)));
     }
 
-    JSONFileValueSerializer serializer(path.AppendASCII(L"geolocationCache"));
+    JSONFileValueSerializer serializer(path.AppendASCII("geolocationCache"));
     serializer.Serialize(*geolocations);
   }
 #endif
