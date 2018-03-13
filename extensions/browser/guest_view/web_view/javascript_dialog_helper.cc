@@ -64,6 +64,15 @@ void JavaScriptDialogHelper::RunJavaScriptDialog(
     web_view_permission_helper =
       WebViewPermissionHelper::FromWebContents(web_view_guest_->web_contents());
   }
+
+  if (!web_view_permission_helper) {
+    WebViewPermissionHelper::RequestPermission(
+      base::BindOnce(&JavaScriptDialogHelper::OnPermissionResponse,
+        base::Unretained(this),
+        std::move(callback)));
+    return;
+  }
+
   web_view_permission_helper->RequestPermission(
       WEB_VIEW_PERMISSION_TYPE_JAVASCRIPT_DIALOG, request_info,
       base::BindOnce(&JavaScriptDialogHelper::OnPermissionResponse,
