@@ -168,7 +168,7 @@ void SSLManager::OnCertificateError(std::unique_ptr<SSLErrorHandler> handler)
   dict->SetList("subject.domain_components", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(handler->ssl_info().cert->subject().domain_components)));
   dict->SetList("subject.organization_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(handler->ssl_info().cert->subject().organization_names)));
   dict->SetList("subject.organization_unit_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(handler->ssl_info().cert->subject().organization_unit_names)));
-  dict->SetString("fingerprint", base::HexEncode(handler->ssl_info().cert->CalculateFingerprint256(handler->ssl_info().cert->os_cert_handle()).data, sizeof(net::SHA256HashValue)));
+  dict->SetString("fingerprint", base::HexEncode(handler->ssl_info().cert->CalculateFingerprint256(handler->ssl_info().cert->cert_buffer()).data, sizeof(net::SHA256HashValue)));
 
   std::unique_ptr<base::ListValue> certificateInfo(new base::ListValue());
   certificateInfo->Append(std::unique_ptr<base::Value>(static_cast<base::Value*>(dict)));

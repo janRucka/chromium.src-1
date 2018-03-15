@@ -1501,7 +1501,7 @@ void WebViewGuest::VisibleSecurityStateChanged(content::WebContents* source) {
     dict->SetList("subject.domain_components", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().domain_components)));
     dict->SetList("subject.organization_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().organization_names)));
     dict->SetList("subject.organization_unit_names", std::unique_ptr<base::ListValue>(ListValue_FromStringArray(cert->subject().organization_unit_names)));
-    dict->SetString("fingerprint", base::HexEncode(cert->CalculateFingerprint256(cert->os_cert_handle()).data, sizeof(net::SHA256HashValue)));
+    dict->SetString("fingerprint", base::HexEncode(cert->CalculateFingerprint256(cert->cert_buffer()).data, sizeof(net::SHA256HashValue)));
   }
 
   base::ListValue* certificateInfo = new base::ListValue();
