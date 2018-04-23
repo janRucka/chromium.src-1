@@ -952,6 +952,21 @@ ExtensionFunction::ResponseAction WebViewInternalAllowCertificateFunction::Run()
     return RespondNow(NoArguments());
 }
 
+WebViewInternalShowCurrentCertificateDetailsFunction
+::WebViewInternalShowCurrentCertificateDetailsFunction() {
+}
+
+WebViewInternalShowCurrentCertificateDetailsFunction
+::~WebViewInternalShowCurrentCertificateDetailsFunction() {
+}
+
+ExtensionFunction::ResponseAction WebViewInternalShowCurrentCertificateDetailsFunction
+::Run() {
+  guest_->ShowCurrentCertificateDetails();
+
+  return RespondNow(NoArguments());
+}
+
 WebViewInternalSetAudioMutedFunction::WebViewInternalSetAudioMutedFunction() {}
 
 WebViewInternalSetAudioMutedFunction::~WebViewInternalSetAudioMutedFunction() {}

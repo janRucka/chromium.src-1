@@ -472,6 +472,24 @@ protected:
   DISALLOW_COPY_AND_ASSIGN(WebViewInternalAllowCertificateFunction);
 };
 
+class WebViewInternalShowCurrentCertificateDetailsFunction 
+  : public WebViewInternalExtensionFunction {
+public:
+  DECLARE_EXTENSION_FUNCTION("webViewInternal.showCurrentCertificateDetails"
+  , WEBVIEWINTERNAL_SHOWCURRENTCERTIFICATEDETAILS);
+
+  WebViewInternalShowCurrentCertificateDetailsFunction();
+
+protected:
+  ~WebViewInternalShowCurrentCertificateDetailsFunction() override;
+
+private:
+ // UIThreadExtensionFunction:
+  ResponseAction Run() override;
+
+  DISALLOW_COPY_AND_ASSIGN(WebViewInternalShowCurrentCertificateDetailsFunction);
+};
+
 class WebViewInternalSetAudioMutedFunction
     : public WebViewInternalExtensionFunction {
  public:
