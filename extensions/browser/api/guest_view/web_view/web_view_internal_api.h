@@ -457,6 +457,21 @@ class WebViewInternalStopFunction : public WebViewInternalExtensionFunction {
   DISALLOW_COPY_AND_ASSIGN(WebViewInternalStopFunction);
 };
 
+class WebViewInternalAllowCertificateFunction : public WebViewInternalExtensionFunction {
+ public:
+  DECLARE_EXTENSION_FUNCTION("webViewInternal.allowCertificate", WEBVIEWINTERNAL_ALLOWCERTIFICATE);
+
+  WebViewInternalAllowCertificateFunction();
+
+protected:
+  ~WebViewInternalAllowCertificateFunction() override;
+
+  // WebViewInternalExtensionFunction implementation.
+  ResponseAction Run() override;
+
+  DISALLOW_COPY_AND_ASSIGN(WebViewInternalAllowCertificateFunction);
+};
+
 class WebViewInternalSetAudioMutedFunction
     : public WebViewInternalExtensionFunction {
  public:
