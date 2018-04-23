@@ -933,6 +933,22 @@ ExtensionFunction::ResponseAction WebViewInternalStopFunction::Run() {
   return RespondNow(NoArguments());
 }
 
+WebViewInternalAllowCertificateFunction::WebViewInternalAllowCertificateFunction() {
+}
+
+WebViewInternalAllowCertificateFunction::~WebViewInternalAllowCertificateFunction() {
+}
+
+ExtensionFunction::ResponseAction WebViewInternalAllowCertificateFunction::Run() {
+    bool allow;
+    EXTENSION_FUNCTION_VALIDATE(args_->GetBoolean(1, &allow));
+    base::Callback<void(WebContents*, bool)> certCallback = guest_->web_contents()->GetCertificateErrorCallback();
+    if (!certCallback.is_null())
+      certCallback.Run(guest_->web_contents(), allow);
+
+    return RespondNow(NoArguments());
+}
+
 WebViewInternalSetAudioMutedFunction::WebViewInternalSetAudioMutedFunction() {}
 
 WebViewInternalSetAudioMutedFunction::~WebViewInternalSetAudioMutedFunction() {}
