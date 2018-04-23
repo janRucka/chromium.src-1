@@ -11,6 +11,21 @@
     },
     "types": [
       {
+        "id": "HistoryItem",
+        "type": "object",
+        "description": "History item",
+        "properties": {
+          "url": {
+            "type": "string",
+            "description": "Url"
+          },
+          "title": {
+            "type": "string",
+            "description": "Url title"
+          }
+        }
+      },
+      {
         "id": "DataTypeSet",
         "type": "object",
         "description": "A set of data types. Missing data types are interpreted as <code>false</code>.",
@@ -184,6 +199,32 @@
       }
     ],
     "functions": [
+      {
+        "name": "restoreHistory",
+        "type": "function",
+        "description": "Restore navigation history and load selected navigation.",
+        "parameters": [
+            {
+              "type": "integer",
+              "name": "instanceId",
+              "description": "The instance ID of the guest <webview> process."
+            },
+            {
+              "type": "integer",
+              "name": "selectedNavigation",
+              "description": "Selected navigation (zero indexed)."
+            },
+            {
+              "name": "navigation",
+              "type": "array",
+              "items": { 
+                 "$ref": "HistoryItem",
+                 "name": "historyItem" 
+              },
+              "description": "Urls and titles."
+            }
+          ]
+      },
       {
         "name": "showCurrentCertificateDetails",
         "type": "function",
