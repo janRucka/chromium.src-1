@@ -968,6 +968,9 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
   void SetDisplayCutoutSafeArea(gfx::Insets insets);
 #endif
 
+  // PartitionId if available from webview
+  std::string GetPartitionId() override;
+
  private:
   friend class WebContentsObserver;
   friend class WebContents;  // To implement factory methods.
