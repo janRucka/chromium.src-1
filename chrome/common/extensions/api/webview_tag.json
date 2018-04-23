@@ -678,6 +678,11 @@
     ],
     "functions": [
       {
+        "name": "showCurrentCertificateDetails",
+        "type": "function",
+        "description": "Show current certificate details window."
+      },
+      {
         "name": "getAudioState",
         "type": "function",
         "description": "Queries audio state.",
