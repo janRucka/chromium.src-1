@@ -55,6 +55,8 @@ class WebViewPermissionHelper
                         PermissionResponseCallback callback,
                         bool allowed_by_default);
 
+  static void RequestPermission(PermissionResponseCallback callback);
+
   static WebViewPermissionHelper* FromWebContents(
       content::WebContents* web_contents);
   static WebViewPermissionHelper* FromFrameID(int render_process_id,
