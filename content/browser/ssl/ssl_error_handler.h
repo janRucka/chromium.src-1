@@ -84,6 +84,10 @@ class SSLErrorHandler {
   // warning message).
   void DenyRequest();
 
+  static void InsertInstance(SSLErrorHandler* instance);
+  static void EraseInstance(SSLErrorHandler* instance);
+  static std::set<SSLErrorHandler*> GetInstances();
+
  private:
   // This is called on |delegate_thread_|.
   base::WeakPtr<Delegate> delegate_;
