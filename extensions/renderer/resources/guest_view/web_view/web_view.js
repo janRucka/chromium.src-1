@@ -52,6 +52,8 @@ WebViewImpl.prototype.setupAttributes = function() {
       new WebViewAttributes.PartitionAttribute(this);
   this.attributes[WebViewConstants.ATTRIBUTE_SRC] =
       new WebViewAttributes.SrcAttribute(this);
+  this.attributes[WebViewConstants.ATTRIBUTE_USEAUTOMATICCERTHANDLING] =
+      new WebViewAttributes.UseAutomaticCertHandling(this);
   this.attributes[WebViewConstants.ATTRIBUTE_USENEWPROCESS] =
       new WebViewAttributes.UseNewProcessAttribute(this);
 

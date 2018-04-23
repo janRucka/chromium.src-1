@@ -271,6 +271,23 @@ SrcAttribute.prototype.parse = function() {
 };
 
 // -----------------------------------------------------------------------------
+// UseAutomaticCertHandling object.
+
+// Attribute that specifies whether certificate will be handled automaticaly:
+// If true events will be send to allow automatic handling
+function UseAutomaticCertHandling(view) {
+  $Function.call(
+      GuestViewAttributes.BooleanAttribute, this,
+      WebViewConstants.ATTRIBUTE_USEAUTOMATICCERTHANDLING, view);
+}
+
+UseAutomaticCertHandling.prototype.__proto__ =
+    GuestViewAttributes.BooleanAttribute.prototype;
+
+UseAutomaticCertHandling.prototype.handleMutation =
+    UseAutomaticCertHandling.prototype.handleMutation;
+
+// -----------------------------------------------------------------------------
 // UseNewProcessAttribute object.
 
 // Attribute that specifies whether new process should be used.
@@ -297,7 +314,8 @@ var WebViewAttributes = {
   NameAttribute: NameAttribute,
   PartitionAttribute: PartitionAttribute,
   SrcAttribute: SrcAttribute,
-  UseNewProcessAttribute: UseNewProcessAttribute
+  UseNewProcessAttribute: UseNewProcessAttribute,
+  UseAutomaticCertHandling: UseAutomaticCertHandling
 };
 
 // Exports.
