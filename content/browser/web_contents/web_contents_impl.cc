@@ -3586,6 +3586,32 @@ InterstitialPageImpl* WebContentsImpl::GetInterstitialPage() const {
   return interstitial_page_;
 }
 
+void WebContentsImpl::OnCertificateError(std::unique_ptr<base::ListValue> certificate) const {
+  if (delegate_)
+    delegate_->OnCertificateError(certificate.release());
+}
+
+void WebContentsImpl::OnSubFrameCertificateError(std::unique_ptr<base::ListValue> certificate) const {
+  if (delegate_)
+    delegate_->OnSubFrameCertificateError(certificate.release());
+}
+
+void WebContentsImpl::SetCertificateErrorCallback(base::Callback<void(WebContents*, bool)> callback) {
+  certErrorCallback_ = callback;
+}
+
+base::Callback<void(WebContents*, bool)> WebContentsImpl::GetCertificateErrorCallback() const {
+  return certErrorCallback_;
+}
+
+bool WebContentsImpl::GetAutomaticCertHandling() const {
+  return useAutomaticCertHandling_;
+}
+
+void WebContentsImpl::SetAutomaticCertHandling(bool automaticCertHandling) {
+  useAutomaticCertHandling_ = automaticCertHandling;
+}
+
 void WebContentsImpl::PausePageScheduledTasks(bool paused) {
   SendPageMessage(
       new PageMsg_PausePageScheduledTasks(MSG_ROUTING_NONE, paused));
