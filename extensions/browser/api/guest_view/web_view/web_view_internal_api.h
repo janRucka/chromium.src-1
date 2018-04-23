@@ -472,6 +472,24 @@ protected:
   DISALLOW_COPY_AND_ASSIGN(WebViewInternalAllowCertificateFunction);
 };
 
+class WebViewInternalRestoreHistoryFunction
+  : public WebViewInternalExtensionFunction {
+public:
+  DECLARE_EXTENSION_FUNCTION("webViewInternal.restoreHistory"
+  , WEBVIEWINTERNAL_RESTOREHISTORY);
+
+  WebViewInternalRestoreHistoryFunction();
+
+protected:
+  ~WebViewInternalRestoreHistoryFunction() override;
+
+private:
+  // UIThreadExtensionFunction:
+  ResponseAction Run() override;
+
+  DISALLOW_COPY_AND_ASSIGN(WebViewInternalRestoreHistoryFunction);
+};
+
 class WebViewInternalShowCurrentCertificateDetailsFunction 
   : public WebViewInternalExtensionFunction {
 public:
