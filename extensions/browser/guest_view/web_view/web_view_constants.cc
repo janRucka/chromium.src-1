@@ -47,6 +47,7 @@ const char kEventPermissionRequest[] = "webViewInternal.onPermissionRequest";
 const char kEventResponseStarted[] = "webViewInternal.onResponseStarted";
 const char kEventResponsive[] = "webViewInternal.onResponsive";
 const char kEventSizeChanged[] = "webViewInternal.onSizeChanged";
+const char kEventSSLChange[] = "webViewInternal.onSSLChange";
 const char kEventUnresponsive[] = "webViewInternal.onUnresponsive";
 const char kEventZoomChange[] = "webViewInternal.onZoomChange";
 
@@ -64,6 +65,7 @@ const char kWebViewEventPrefix[] = "webViewInternal.";
 
 // Parameters/properties on events.
 const char kAudible[] = "audible";
+const char kCertificate[] = "certificate";
 const char kContextMenuItems[] = "items";
 const char kDefaultPromptText[] = "defaultPromptText";
 const char kFindSearchText[] = "searchText";
