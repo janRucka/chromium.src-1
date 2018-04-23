@@ -12,6 +12,11 @@ html:not([subframe]) #sub-frame-error {
   display: none;
 }
 
+/* Don't show. */
+html {
+  display:none;
+}
+
 #diagnose-button {
   -webkit-margin-start: 0;
   float: none;
