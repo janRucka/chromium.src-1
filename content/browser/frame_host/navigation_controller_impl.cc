@@ -414,6 +414,31 @@ void NavigationControllerImpl::Restore(
   FinishRestore(selected_navigation, type);
 }
 
+void NavigationControllerImpl::Restore(
+  int selected_navigation,
+  std::vector<std::pair<std::string, base::string16>>& entries) {
+
+  std::vector<std::unique_ptr<NavigationEntry>> navigationEntries;
+
+  for (const std::pair<std::string, base::string16>& entry : entries) {
+    GURL url = GURL(entry.first);
+
+    navigationEntries.push_back(
+      std::unique_ptr<NavigationEntry>(
+        new NavigationEntryImpl(
+          nullptr,
+          url,
+          Referrer(),
+          entry.second,
+          ui::PAGE_TRANSITION_LINK,
+          false,
+          nullptr /* blob_url_loader_factory */)));
+  }
+
+  entries_.clear();
+  Restore(selected_navigation, RestoreType::LAST_SESSION_EXITED_CLEANLY, &navigationEntries);
+}
+
 void NavigationControllerImpl::Reload(ReloadType reload_type,
                                       bool check_for_repost) {
   DCHECK_NE(ReloadType::NONE, reload_type);

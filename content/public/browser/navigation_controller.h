@@ -227,6 +227,11 @@ class NavigationController {
       RestoreType type,
       std::vector<std::unique_ptr<NavigationEntry>>* entries) = 0;
 
+  // pair.first = url, pair.second = title
+  virtual void Restore(
+    int selected_navigation,
+    std::vector<std::pair<std::string, base::string16>>& entries) = 0;
+
   // Entries -------------------------------------------------------------------
 
   // There are two basic states for entries: pending and committed. When an
