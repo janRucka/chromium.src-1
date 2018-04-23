@@ -957,6 +957,9 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
   // enumerations.
   const std::string& GetMediaDeviceGroupIDSaltBase() const;
 
+  // PartitionId if available from webview
+  std::string GetPartitionId() override;
+
  private:
   friend class WebContentsObserver;
   friend class WebContents;  // To implement factory methods.
