@@ -987,6 +987,12 @@ class CONTENT_EXPORT WebContentsImpl : public WebContents,
   // |DisplayCutoutHostImpl|.
   void NotifyViewportFitChanged(blink::mojom::ViewportFit value);
 
+  // PartitionId if available from webview
+  std::string GetPartitionId() override;
+
+  // PartitionId if available from webview
+  std::string GetPartitionId() override;
+
  private:
   friend class WebContentsObserver;
   friend class WebContents;  // To implement factory methods.

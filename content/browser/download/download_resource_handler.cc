@@ -313,6 +313,7 @@ void DownloadResourceHandler::OnStart(
   int render_frame_id = -1;
   request_info->GetAssociatedRenderFrame(&render_process_id, &render_frame_id);
 
+  create_info->partition_id = request_info->GetWebContentsGetterForRequest().Run()->GetPartitionId();
   BrowserThread::PostTask(
       BrowserThread::UI, FROM_HERE,
       base::BindOnce(&StartOnUIThread, std::move(create_info),
