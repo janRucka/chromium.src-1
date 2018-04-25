@@ -606,8 +606,8 @@ void WebViewGuest::OnSubFrameCertificateError(base::ListValue* certificate) {
 
 void WebViewGuest::OnUpdateTargetURL(const GURL& url) {
   std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
-  args->Set(webview::kTargetURL, base::MakeUnique<base::Value>(url.spec()));
-  DispatchEventToView(base::MakeUnique<GuestViewEvent>(
+  args->Set(webview::kTargetURL, std::make_unique<base::Value>(url.spec()));
+  DispatchEventToView(std::make_unique<GuestViewEvent>(
     webview::kEventTargetUrlUpdate, std::move(args)));
 }
 
@@ -894,6 +894,16 @@ void WebViewGuest::DidFinishNavigation(
                    web_contents()->GetController().GetCurrentEntryIndex());
   args->SetInteger(webview::kInternalEntryCount,
                    web_contents()->GetController().GetEntryCount());
+
+  base::ListValue *history = new base::ListValue();
+  for (int i = 0; i < web_contents()->GetController().GetEntryCount(); i++) {
+    base::DictionaryValue* dict = new base::DictionaryValue;
+    dict->SetString("url", web_contents()->GetController().GetEntryAtIndex(i)->GetURL().spec());
+    dict->SetString("title", web_contents()->GetController().GetEntryAtIndex(i)->GetTitle());
+    dict->SetString("favicon", web_contents()->GetController().GetEntryAtIndex(i)->GetFavicon().url.spec());
+    history->Append(std::unique_ptr<base::DictionaryValue>(dict));
+  }
+  args->SetList("pagesHistory", std::unique_ptr<base::ListValue>(history));
   args->SetInteger(webview::kInternalProcessId,
                    web_contents()->GetMainFrame()->GetProcess()->GetID());
   DispatchEventToView(std::make_unique<GuestViewEvent>(
