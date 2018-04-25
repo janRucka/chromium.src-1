@@ -37,8 +37,15 @@ var WEB_VIEW_API_METHODS = [
 
   // Returns audio state.
   'getAudioState',
+
   // Return storeId which can be used in chrome.cookies API
   'getCookieStoreId',
+
+  // Get current history index
+  'getCurrentHistoryIndex',
+
+  // Get array with history of URLs titles and favicons
+  'getPagesHistory',
 
   // Returns Chrome's internal process ID for the guest web page's current
   // process.
