@@ -71,6 +71,8 @@ class WebViewPermissionHelper
   void CanDownload(const GURL& url,
                    const std::string& request_method,
                    const base::Callback<void(bool)>& callback);
+  void CanNotify(const GURL& url,
+                 const base::Callback<void(bool)>& callback);
   void RequestPointerLockPermission(bool user_gesture,
                                     bool last_unlocked_by_target,
                                     const base::Callback<void(bool)>& callback);
