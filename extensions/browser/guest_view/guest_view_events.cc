@@ -80,6 +80,8 @@ class EventMap {
         {webview::kEventUnresponsive,
          events::WEB_VIEW_INTERNAL_ON_UNRESPONSIVE},
         {webview::kEventZoomChange, events::WEB_VIEW_INTERNAL_ON_ZOOM_CHANGE},
+        {webview::kEventTargetUrlUpdate, 
+         events::WEB_VIEW_INTERNAL_ON_UPDATE_TARGET_URL},
         {webview::kEventAuthRequired,
          events::WEB_VIEW_INTERNAL_ON_AUTH_REQUIRED},
         {webview::kEventBeforeRedirect,
