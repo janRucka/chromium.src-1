@@ -168,7 +168,7 @@ FrameTreeNode* RenderFrameHostManager::GetOuterDelegateNode() {
 }
 
 RenderFrameProxyHost* RenderFrameHostManager::GetProxyToParent() {
-  if (frame_tree_node_->IsMainFrame())
+  if (frame_tree_node_->IsMainFrame() || !frame_tree_node_->parent())
     return nullptr;
 
   return GetRenderFrameProxyHost(frame_tree_node_->parent()
