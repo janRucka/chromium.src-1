@@ -105,6 +105,19 @@ MediaPermissionRequest.prototype.deny = function() {};
 
 /**
  * @constructor
+ * @see https://developer.chrome.com/apps/tags/webview
+ */
+function NotificationPermissionRequest() { }
+
+/** @type {string} */
+NotificationPermissionRequest.prototype.url;
+
+NotificationPermissionRequest.prototype.allow = function () {};
+
+NotificationPermissionRequest.prototype.deny = function () {};
+
+/**
+ * @constructor
  * @see https://developer.chrome.com/apps/tags/webview#type-GeolocationPermissionRequest
  */
 function GeolocationPermissionRequest() {}

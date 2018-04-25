@@ -100,6 +100,7 @@ const char kPermissionTypeGeolocation[] = "geolocation";
 const char kPermissionTypeLoadPlugin[] = "loadplugin";
 const char kPermissionTypeMedia[] = "media";
 const char kPermissionTypeNewWindow[] = "newwindow";
+const char kPermissionTypeNotification[] = "notification";
 const char kPermissionTypePointerLock[] = "pointerLock";
 const char kOldWidth[] = "oldWidth";
 const char kProcessId[] = "processId";
