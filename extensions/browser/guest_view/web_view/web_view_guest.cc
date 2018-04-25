@@ -605,6 +605,13 @@ void WebViewGuest::OnSubFrameCertificateError(base::ListValue* certificate) {
     webview::kEventSubFrameCertificateError, std::move(args)));
 }
 
+void WebViewGuest::OnUpdateTargetURL(const GURL& url) {
+  std::unique_ptr<base::DictionaryValue> args(new base::DictionaryValue());
+  args->Set(webview::kTargetURL, std::make_unique<base::Value>(url.spec()));
+  DispatchEventToView(std::make_unique<GuestViewEvent>(
+    webview::kEventTargetUrlUpdate, std::move(args)));
+}
+
 void WebViewGuest::ShowCurrentCertificateDetails() const {
   if (web_contents() == nullptr || web_contents()->GetController().GetActiveEntry() == nullptr)
     return;
