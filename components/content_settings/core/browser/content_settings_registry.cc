@@ -186,7 +186,7 @@ void ContentSettingsRegistry::Init() {
            ContentSettingsInfo::PERSISTENT);
 
   Register(CONTENT_SETTINGS_TYPE_NOTIFICATIONS, "notifications",
-           CONTENT_SETTING_ALLOW, WebsiteSettingsInfo::UNSYNCABLE,
+           CONTENT_SETTING_ASK, WebsiteSettingsInfo::UNSYNCABLE,
            WhitelistedSchemes(),
            ValidSettings(CONTENT_SETTING_ALLOW, CONTENT_SETTING_BLOCK,
                          CONTENT_SETTING_ASK),

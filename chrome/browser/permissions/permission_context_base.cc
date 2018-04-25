@@ -150,8 +150,9 @@ void PermissionContextBase::RequestPermission(
     result.content_setting = CONTENT_SETTING_ALLOW;
   }
 
-  if (result.content_setting == CONTENT_SETTING_ALLOW ||
-      result.content_setting == CONTENT_SETTING_BLOCK) {
+  if ((result.content_setting == CONTENT_SETTING_ALLOW ||
+      result.content_setting == CONTENT_SETTING_BLOCK) &&
+      content_settings_type_ != CONTENT_SETTINGS_TYPE_NOTIFICATIONS) {
     switch (result.source) {
       case PermissionStatusSource::KILL_SWITCH:
         // Block the request and log to the developer console.
