@@ -106,6 +106,7 @@ extern const char kPermissionTypeGeolocation[];
 extern const char kPermissionTypeLoadPlugin[];
 extern const char kPermissionTypeMedia[];
 extern const char kPermissionTypeNewWindow[];
+extern const char kPermissionTypeNotification[];
 extern const char kPermissionTypePointerLock[];
 extern const char kOldWidth[];
 extern const char kProcessId[];
