@@ -628,8 +628,16 @@ RenderFrameHost* FindRequestManager::Traverse(RenderFrameHost* from_rfh,
   DCHECK(from_rfh);
   FrameTreeNode* node =
       static_cast<RenderFrameHostImpl*>(from_rfh)->frame_tree_node();
+  std::set<FrameTreeNode*> traverseSet;
 
   while ((node = TraverseNode(node, forward, wrap)) != nullptr) {
+    std::pair<std::set<FrameTreeNode*>::iterator, bool> traverseSetRetVal =
+      traverseSet.insert(node);
+
+    // Sometimes this loop turn out to be infinite, this should prevent it.
+    if (!traverseSetRetVal.second)
+      return nullptr;
+
     if (!CheckFrame(node->current_frame_host()))
       continue;
     RenderFrameHost* current_rfh = node->current_frame_host();
@@ -739,7 +747,8 @@ void FindRequestManager::FinalUpdateReceived(int request_id,
   NotifyFindReply(request_id, false /* final_update */);
 
   current_request_.options.find_next = true;
-  SendFindIPC(current_request_, target_rfh);
+  if (target_rfh)
+    SendFindIPC(current_request_, target_rfh);
 }
 
 #if defined(OS_ANDROID)
