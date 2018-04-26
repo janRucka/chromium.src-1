@@ -719,6 +719,11 @@ bool SetAsDefaultBrowser() {
   return shell_integration_linux::SetDefaultWebClient(std::string());
 }
 
+bool Register(base::Callback<void(bool)> callback) {
+  callback.Run(true);
+  return true;
+}
+
 bool SetAsDefaultProtocolClient(const std::string& protocol) {
   return shell_integration_linux::SetDefaultWebClient(protocol);
 }

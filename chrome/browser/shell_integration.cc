@@ -163,6 +163,12 @@ void DefaultWebClientWorker::StartSetAsDefault() {
       FROM_HERE, base::Bind(&DefaultWebClientWorker::SetAsDefault, this));
 }
 
+void DefaultWebClientWorker::StartRegistration() {
+  BrowserThread::PostTask(
+    BrowserThread::IO, FROM_HERE,
+    base::Bind(&DefaultWebClientWorker::Registration, this));
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // DefaultWebClientWorker, protected:
 
@@ -196,12 +202,25 @@ void DefaultWebClientWorker::CheckIsDefault(bool is_following_set_as_default) {
                  is_following_set_as_default));
 }
 
+void DefaultWebClientWorker::IsRegistered(bool registered) {
+  DCHECK_CURRENTLY_ON(BrowserThread::IO);
+  DefaultWebClientState state = registered ? DefaultWebClientState::IS_DEFAULT : DefaultWebClientState::NOT_DEFAULT;
+  BrowserThread::PostTask(
+    BrowserThread::UI, FROM_HERE,
+    base::Bind(&DefaultBrowserWorker::OnCheckIsDefaultComplete, this, state, false));
+}
+
 void DefaultWebClientWorker::SetAsDefault() {
   base::ScopedBlockingCall scoped_blocking_call(base::BlockingType::MAY_BLOCK);
 
   // SetAsDefaultImpl will make sure the callback is executed exactly once.
   SetAsDefaultImpl(
       base::Bind(&DefaultWebClientWorker::CheckIsDefault, this, true));
+}
+
+void DefaultWebClientWorker::Registration() {
+  DCHECK_CURRENTLY_ON(BrowserThread::IO);
+  Register(base::Bind(&DefaultWebClientWorker::IsRegistered, this));
 }
 
 void DefaultWebClientWorker::ReportSetDefaultResult(
