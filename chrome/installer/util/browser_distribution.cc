@@ -108,7 +108,7 @@ base::string16 BrowserDistribution::GetStartMenuShortcutSubfolder(
 }
 
 base::string16 BrowserDistribution::GetPublisherName() {
-  return L"nwjs";
+  return L"Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetAppDescription() {
@@ -122,7 +122,7 @@ base::string16 BrowserDistribution::GetLongAppDescription() {
 }
 
 std::string BrowserDistribution::GetSafeBrowsingName() {
-  return "nwjs";
+  return "Seznam.cz";
 }
 
 base::string16 BrowserDistribution::GetDistributionData(HKEY root_key) {
