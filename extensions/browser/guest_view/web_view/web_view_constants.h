@@ -17,6 +17,7 @@ extern const char kAttributeAllowScaling[];
 extern const char kAttributeName[];
 extern const char kAttributeSrc[];
 extern const char kAttributeAllowNW[];
+extern const char kAttributeUseNewProcess[];
 
 // API namespace.
 // TODO(kalman): Consolidate this with the other API constants.
