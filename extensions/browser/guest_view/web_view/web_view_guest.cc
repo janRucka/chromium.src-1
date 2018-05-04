@@ -359,13 +359,17 @@ void WebViewGuest::CreateWebContents(const base::DictionaryValue& create_params,
       GetSiteForGuestPartitionConfig(partition_domain, storage_partition_id,
                                      !persist_storage /* in_memory */));
 
-  // If we already have a webview tag in the same app using the same storage
-  // partition, we should use the same SiteInstance so the existing tag and
-  // the new tag can script each other.
-  auto* guest_view_manager = GuestViewManager::FromBrowserContext(
+  bool useNewProcess = false;
+  create_params.GetBoolean(webview::kAttributeUseNewProcess, &useNewProcess);
+  scoped_refptr<content::SiteInstance> guest_site_instance = nullptr;
+  if (!useNewProcess) {
+    // If we already have a webview tag in the same app using the same storage
+    // partition, we should use the same SiteInstance so the existing tag and
+    // the new tag can script each other.
+    auto* guest_view_manager = GuestViewManager::FromBrowserContext(
       owner_render_process_host->GetBrowserContext());
-  scoped_refptr<content::SiteInstance> guest_site_instance =
-      guest_view_manager->GetGuestSiteInstance(guest_site);
+    guest_site_instance = guest_view_manager->GetGuestSiteInstance(guest_site);
+  }
   if (!guest_site_instance) {
     // Create the SiteInstance in a new BrowsingInstance, which will ensure
     // that webview tags are also not allowed to send messages across
