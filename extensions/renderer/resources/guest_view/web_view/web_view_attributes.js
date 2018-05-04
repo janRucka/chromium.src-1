@@ -270,6 +270,24 @@ SrcAttribute.prototype.parse = function() {
   WebViewInternal.navigate(this.view.guest.getId(), this.getValue());
 };
 
+// -----------------------------------------------------------------------------
+// UseNewProcessAttribute object.
+
+// Attribute that specifies whether new process should be used.
+function UseNewProcessAttribute(view) {
+  $Function.call(
+      GuestViewAttributes.BooleanAttribute, this, WebViewConstants.ATTRIBUTE_USENEWPROCESS,
+      view);
+}
+
+UseNewProcessAttribute.prototype.__proto__ =
+    GuestViewAttributes.BooleanAttribute.prototype;
+
+UseNewProcessAttribute.prototype.handleMutation =
+    UseNewProcessAttribute.prototype.handleMutation;
+
+// -----------------------------------------------------------------------------
+
 var WebViewAttributes = {
   AllowNWAttribute: AllowNWAttribute,
   AllowScalingAttribute: AllowScalingAttribute,
@@ -278,7 +296,8 @@ var WebViewAttributes = {
   AutosizeAttribute: AutosizeAttribute,
   NameAttribute: NameAttribute,
   PartitionAttribute: PartitionAttribute,
-  SrcAttribute: SrcAttribute
+  SrcAttribute: SrcAttribute,
+  UseNewProcessAttribute: UseNewProcessAttribute
 };
 
 // Exports.
