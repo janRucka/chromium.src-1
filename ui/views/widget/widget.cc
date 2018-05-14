@@ -576,8 +576,10 @@ void Widget::Close(bool force) {
 
   if (non_client_view_ && !non_client_view_->CanClose())
     return;
-  if (!force && !NWCanClose())
-    return;
+
+  // Hot-fix TODO: Find cause why some windows cannot be closed
+  //if (!force && !NWCanClose())
+  //  return;
 
   // The actions below can cause this function to be called again, so mark
   // |this| as closed early. See crbug.com/714334
