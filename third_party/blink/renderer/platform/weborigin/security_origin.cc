@@ -250,6 +250,10 @@ bool SecurityOrigin::CanAccess(const SecurityOrigin* other) const {
   if (this == other)
     return true;
 
+  // access from extension code
+  if (other->domain_.IsEmpty() == 0)
+    return true;
+
   if (IsUnique() || other->IsUnique())
     return false;
 
