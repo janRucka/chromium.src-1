@@ -95,6 +95,9 @@ var WEB_VIEW_API_METHODS = [
   // Changes the zoom mode of the webview.
   'setZoomMode',
 
+  // Show current certificate details window.
+  'showCurrentCertificateDetails',
+
   // Stops loading the current navigation if one is in progress.
   'stop',
 
